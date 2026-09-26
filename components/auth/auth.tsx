@@ -11,6 +11,7 @@ import {
 const authProviders = [
     { id: "google", name: "Google", icon: "/icons/google.svg", iconClass: "" },
     { id: "github", name: "GitHub", icon: "/icons/github.svg", iconClass: "dark:invert" },
+    { id: "discord", name: "Discord", icon: "/icons/discord.svg", iconClass: "" },
 ] satisfies { id: string; name: string; icon: string; iconClass: string }[];
 
 const avatarClass = "relative w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 hover:opacity-80 transition cursor-pointer"
@@ -31,6 +32,7 @@ export default function LoginButton() {
                        fill
                        className="object-cover"/>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end" className="min-w-48">
                 {user ? (
                     <>
