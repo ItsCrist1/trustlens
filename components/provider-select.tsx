@@ -6,6 +6,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { OpenRouterConfig } from "@/components/provider-configs/openrouter-config";
 import {OpenAIConfig} from "@/components/provider-configs/openai-config";
 
+export type ProviderSettings = { endpoint: string; apiKey: string; model: string };
+
+export type ConfigProps = {
+    settings: ProviderSettings;
+    onChange: (patch: Partial<ProviderSettings>) => void;
+};
+
+const emptySettings: ProviderSettings = { endpoint: "", apiKey: "", model: "" };
+
 const providers = [
     {
         value: "openrouter", name: "OpenRouter",
@@ -16,13 +25,13 @@ const providers = [
     },
 
     {
-        value: "openai", name: "OpenAI",
+        value: "openai", name: "OpenAI-Compatible",
         icon: "/icons/openai.svg",
         width: 20, height: 20,
         iconClass: "invert dark:invert-0", alt: "OpenAI Logo",
         config: OpenAIConfig
     }
-] satisfies { value: string; name: string; icon: string; width: number, height: number, iconClass: string; alt: string; config: ComponentType}[];
+] satisfies { value: string; name: string; icon: string; width: number, height: number, iconClass: string; alt: string; config: ComponentType<ConfigProps>}[];
 
 function ProviderLabel({ value }: { value: string }) {
     const p = providers.find((p) => p.value === value);
@@ -38,6 +47,7 @@ function ProviderLabel({ value }: { value: string }) {
 
 export function ProviderSelect() {
     const [provider, setProvider] = useState("openrouter");
+    const [settings, setSettings] = useState<Record<string, ProviderSettings>>({});
 
     const current = providers.find((p) => p.value === provider)!;
     const Config = current.config;
@@ -45,19 +55,22 @@ export function ProviderSelect() {
     return (
         <div className="flex w-80 flex-col gap-4">
             <Select value={provider} onValueChange={(v) => setProvider(v as string)}>
-                <SelectTrigger className="w-full cursor-pointer">
+                <SelectTrigger className="w-full rounded-lg cursor-pointer">
                     <SelectValue>{(value: string) => <ProviderLabel value={value}/>}</SelectValue>
                 </SelectTrigger>
                 <SelectContent alignItemWithTrigger={false}>
                     {providers.map((p) => (
-                        <SelectItem key={p.value} value={p.value} className="cursor-pointer">
+                        <SelectItem key={p.value} value={p.value} className="rounded-lg cursor-pointer">
                             <ProviderLabel value={p.value}/>
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
 
-            <Config/>
+            <Config settings={settings[provider] ?? emptySettings} onChange={(patch) => setSettings((s) => ({
+                ...s,
+                [provider]: { ...s[provider] ?? emptySettings, ...patch}
+            }))}/>
         </div>
     );
 }

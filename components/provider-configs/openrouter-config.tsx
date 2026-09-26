@@ -1,10 +1,8 @@
 import { Input } from "@/components/ui/input";
 import {Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList} from "@/components/ui/combobox";
 import {useState} from "react";
-
-type OpenRouterConfigProps = {
-
-}
+import {Label} from "@/components/ui/label";
+import type { ConfigProps } from "@/components/provider-select";
 
 const templates = [
     "anthropic/claude-sonnet-5", "anthropic/claude-opus-5.5", "anthropic/claude-fable-5.1", "openai/gpt-6-astra", "openai/gpt-6-sol",
@@ -19,30 +17,35 @@ const templates = [
     "openchat/openchat-7b", "writer/palmyra-x-004", "allenai/olmo-7b-instruct", "togethercomputer/stripedhyena-nous-7b", "thinkingmachines/inkling-small:free"
 ];
 
-export function OpenRouterConfig({}: OpenRouterConfigProps) {
-    const [model, setModel] = useState("");
-
+export function OpenRouterConfig({settings, onChange}: ConfigProps) {
     return (
-        <div>
-            <Input type="text" placeholder="OpenRouter API Key"/>
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-row gap-3">
+                <Label className="whitespace-nowrap">API Key:</Label>
+                <Input type="text" className="rounded-lg" placeholder="OpenRouter API Key" value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
+            </div>
 
-            <Combobox
-                inputValue={model}
-                onInputValueChange={setModel}
-                items={templates}
-                openOnInputClick={false}>
-                <ComboboxInput className="rounded-lg" placeholder="Enter or choose a model" />
+            <div className="flex flex-row gap-3">
+                <Label className="whitespace-nowrap">Model:</Label>
 
-                <ComboboxContent className="rounded-lg">
-                    <ComboboxList>
-                        {(template: string) => (
-                            <ComboboxItem key={template} value={template}>
-                                {template}
-                            </ComboboxItem>
-                        )}
-                    </ComboboxList>
-                </ComboboxContent>
-            </Combobox>
+                <Combobox
+                    inputValue={settings.model}
+                    onInputValueChange={(model) => onChange({ model })}
+                    items={templates}
+                    openOnInputClick={false}>
+                    <ComboboxInput className="flex-1 rounded-lg" placeholder="Enter or choose a model" />
+
+                    <ComboboxContent className="rounded-lg">
+                        <ComboboxList>
+                            {(template: string) => (
+                                <ComboboxItem key={template} value={template}>
+                                    {template}
+                                </ComboboxItem>
+                            )}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+            </div>
         </div>
     );
 }

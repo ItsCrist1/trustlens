@@ -7,10 +7,8 @@ import {
     ComboboxList,
 } from "@/components/ui/combobox";
 import {useState} from "react";
-
-type OpenAIConfigProps = {
-
-}
+import {Label} from "@/components/ui/label";
+import type { ConfigProps } from "@/components/provider-select";
 
 const templates = [
     "gpt-6-sol",
@@ -35,30 +33,40 @@ const templates = [
     "gpt-4o-mini"
 ];
 
-export function OpenAIConfig({}: OpenAIConfigProps) {
-    const [model, setModel] = useState("");
-
+export function OpenAIConfig({settings, onChange}: ConfigProps) {
     return (
-        <div>
-            <Input type="text" className="rounded-lg" placeholder="OpenAI API Key"/>
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-row gap-3">
+                <Label>Endpoint:</Label>
+                <Input type="text" className="rounded-lg" placeholder="/api.openai.com/v1/chat/completions/" value={settings.endpoint} onChange={(e) => onChange({ apiKey: e.target.value })}/>
+            </div>
 
-            <Combobox
-                inputValue={model}
-                onInputValueChange={setModel}
-                items={templates}
-                openOnInputClick={false}>
-                <ComboboxInput className="rounded-lg" placeholder="Enter or choose a model" />
+            <div className="flex flex-row gap-3">
+                <Label className="whitespace-nowrap">API Key:</Label>
+                <Input type="text" className="rounded-lg" placeholder="sk-proj-abc123def..." value={settings.apiKey} onChange={(e) => onChange({ endpoint: e.target.value })}/>
+            </div>
 
-                <ComboboxContent className="rounded-lg">
-                    <ComboboxList>
-                        {(template: string) => (
-                            <ComboboxItem key={template} value={template}>
-                                {template}
-                            </ComboboxItem>
-                        )}
-                    </ComboboxList>
-                </ComboboxContent>
-            </Combobox>
+            <div className="flex flex-row gap-3">
+                <Label className="whitespace-nowrap">Model:</Label>
+
+                <Combobox
+                    inputValue={settings.model}
+                    onInputValueChange={(model) => onChange({ model })}
+                    items={templates}
+                    openOnInputClick={false}>
+                    <ComboboxInput className="flex-1 rounded-lg" placeholder="Enter or choose a model" />
+
+                    <ComboboxContent className="rounded-lg">
+                        <ComboboxList>
+                            {(template: string) => (
+                                <ComboboxItem key={template} value={template}>
+                                    {template}
+                                </ComboboxItem>
+                            )}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+            </div>
         </div>
     );
 }
