@@ -17,7 +17,7 @@ export function OpenRouterConfig({settings, onChange}: ConfigProps) {
                 <Input type="password" className="rounded-lg" placeholder="OpenRouter API Key" value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
             </div>
 
-            <ModelList models={settings.models} templates={templates["openrouter"]} onChange={(models) => onChange({ models })}/>
+            <ModelList models={settings.models} templates={templates["openrouter"]} displayLabel={true} onChange={(models) => onChange({ models })}/>
         </div>
     );
 }

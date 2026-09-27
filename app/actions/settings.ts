@@ -5,7 +5,6 @@ import { db } from "@/db"
 import { providerSettings } from "@/db/schema"
 import { and, eq, desc } from "drizzle-orm"
 import {revalidatePath} from "next/cache";
-import {toast} from "sonner";
 
 async function requireUserId() {
     const session = await auth()

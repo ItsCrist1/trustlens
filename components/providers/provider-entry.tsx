@@ -56,7 +56,7 @@ export default function ProviderEntry(data: {
                     const res = await deleteSetting(data.id);
                     if (res.ok) toast.success(res.message);
                     else toast.error(res.message);
-                }}>
+                }} className="rounded-lg cursor-pointer">
                     <Trash/>
                 </Button>
 
@@ -71,7 +71,7 @@ export default function ProviderEntry(data: {
                         }
                     }
                     setReadonly((r) => !r);
-                }} className="ml-auto rounded-lg">{isReadOnly ? <Pencil/> : <Check/>}</Button>
+                }} className="ml-auto rounded-lg cursor-pointer">{isReadOnly ? <Pencil/> : <Check/>}</Button>
             </div>
 
             { data.endpoint &&
@@ -83,7 +83,7 @@ export default function ProviderEntry(data: {
 
             { data.models &&
                 <div className="flex flex-col gap-2">
-                    <Label className="md:text-base">Models: </Label>
+                    <Label className="md:text-base">Model{models.length === 1 ? '' : 's'}:</Label>
 
                     { isReadOnly && models.map((model) => {
                         const corpo = corpos[data.provider === "openai" ? "openai" : model.split('/')[0]];
@@ -101,7 +101,7 @@ export default function ProviderEntry(data: {
 
                     { !isReadOnly &&
                         <div className="flex flex-col gap-2">
-                            <ModelList models={models} templates={templates[data.provider] ?? []} onChange={setModels}/>
+                            <ModelList models={models} templates={templates[data.provider] ?? []} displayLabel={false} onChange={setModels}/>
                         </div>
                     }
                 </div>

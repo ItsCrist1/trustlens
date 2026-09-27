@@ -30,21 +30,22 @@ function ModelRow({value, onChange, onRemove, isAlone, templates}: { value: stri
                 </ComboboxContent>
             </Combobox>
 
-            <Button className="rounded-lg" onClick={onRemove} disabled={isAlone}><Minus/></Button>
+            <Button className="rounded-lg cursor-pointer" onClick={onRemove} disabled={isAlone}><Minus/></Button>
         </div>
     );
 }
 
-export default function ModelList({ models, templates, onChange }: {
+export default function ModelList({ models, templates, onChange, displayLabel }: {
     models: string[];
     templates: string[];
     onChange: (models: string[]) => void;
+    displayLabel: boolean;
 }) {
     return (
         <>
             <div className="flex items-center gap-2">
-                <Label className="whitespace-nowrap">{(models.length === 1 ? "Model" : "Models") + ':'}</Label>
-                <Button className="rounded-lg ml-auto" onClick={() => onChange([...models, ""])}>
+                {displayLabel && <Label className="whitespace-nowrap">{(models.length === 1 ? "Model" : "Models") + ':'}</Label> }
+                <Button className="rounded-lg ml-auto cursor-pointer" onClick={() => onChange([...models, ""])}>
                     <Plus/>Add Model
                 </Button>
             </div>
