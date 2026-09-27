@@ -10,7 +10,7 @@ export function SideBar({width}: {width: number}) {
         <ResizableAside initialWidth={width}>
             <Image src="/flowera.png" width={120} height={120} alt="Flowera Logo"
                    className="dark:invert @max-[120px]:hidden"/>
-            <Image src="/icons/flowera.jpeg" width={40} height={40} alt="Flowera Logo"
+            <Image src="/icons/flowera.png" width={40} height={40} alt="Flowera Logo"
                    className="dark:invert hidden @max-[120px]:block"/>
 
             <NavTabs orientation="vertical"/>

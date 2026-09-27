@@ -21,7 +21,7 @@ export function NavTabs({ orientation }: { orientation: "horizontal" | "vertical
                       className="rounded-lg px-3 py-2 aria-[current=page]:bg-accent @max-[120px]:px-0">
                     <div className="flex items-center gap-2 @max-[120px]:justify-center">
                         <t.icon className="shrink-0"/>
-                        <span className="@max-[120px]:hidden">{t.label}</span>
+                        <span className={cn("@max-[120px]:hidden", orientation === "horizontal" && "max-md:hidden")}>{t.label}</span>
                     </div>
                 </Link>
             ))}

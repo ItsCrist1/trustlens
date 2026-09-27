@@ -1,18 +1,22 @@
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import LoginButton from "@/components/auth/auth";
 import { NavTabs } from "@/components/nav/nav-tabs";
-import type { Orientation } from "@/components/nav/orientation";
 import {OrientationToggle} from "@/components/nav/orientation-toggle";
+import Image from "next/image";
 
 export function TopBar() {
     return (
-        <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b bg-background/70 px-4 backdrop-blur">
-            <div className="flex items-center gap-6">
-                <span className="font-semibold">TrustLens</span>
+        <header className="sticky top-0 z-50 flex h-14 items-center justify-between gap-4 border-b bg-background/70 px-4 backdrop-blur">
+            <div className="flex min-w-0 items-center gap-6">
+                <Image src="/flowera.png" width={120} height={120} alt="Flowera Logo"
+                       className="dark:invert hidden sm:block"/>
+                <Image src="/icons/flowera.png" width={40} height={40} alt="Flowera Logo"
+                       className="dark:invert sm:hidden"/>
+
                 <NavTabs orientation="horizontal"/>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex shrink-0 items-center gap-4">
                 <OrientationToggle orientation="horizontal"/>
                 <ThemeToggle/>
                 <LoginButton/>
