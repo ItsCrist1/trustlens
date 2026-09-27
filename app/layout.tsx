@@ -14,8 +14,36 @@ import { ORIENTATION_COOKIE, SIDEBAR_WIDTH_COOKIE, clampSidebarWidth, type Orien
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
 export const metadata: Metadata = {
-    title: "TrustLens",
+    metadataBase: new URL("https://floweratrustlens.tech"),
+    title: {
+        default: "Flowera TrustLens",
+        template: "%s · TrustLens",
+    },
     description: "AI Powered AI Safety",
+
+    icons: {
+        icon: [
+            { url: "/icons/flowera.png", media: "(prefers-color-scheme: light)" },
+            { url: "/icons/flowera_white.png", media: "(prefers-color-scheme: dark)" },
+        ],
+
+        apple: "/icons/flowera.png"
+    },
+
+    applicationName: "TrustLens",
+    openGraph: {
+        type: "website",
+        siteName: "TrustLens",
+        title: "Flowera TrustLens",
+        description: "Evaluate how trustworthy your AI models really are.",
+        url: "/",
+        locale: "en_US",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Flowera TrustLens",
+        description: "Evaluate how trustworthy your AI models really are.",
+    },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
