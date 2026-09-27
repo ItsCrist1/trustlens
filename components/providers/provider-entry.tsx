@@ -5,12 +5,12 @@ import {Label} from "@/components/ui/label";
 import Image from "next/image";
 import {getProvider} from "@/components/providers/provider-select";
 import {Button} from "@/components/ui/button";
-import {Check, Pencil, Trash} from "lucide-react";
+import {Check, Copy, Pencil, Trash} from "lucide-react";
 import {useState} from "react";
 import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
 import { toast } from "sonner";
-import {deleteSetting} from "@/app/actions/settings";
+import {deleteSetting, updateSetting} from "@/app/actions/settings";
 
 type Corpo = { icon: string; alt: string, className?: string };
 
@@ -26,9 +26,10 @@ const corpos: Record<string, Corpo> = {
     bytedance: { icon: "/icons/bytedance.svg", alt: "Bytedance logo" }
 };
 
-function ProviderText({ text, isReadOnly } : { text: string, isReadOnly: boolean }) {
+function ProviderText({ text, onChange, isReadOnly } : { text: string, onChange: (v: string) => void; isReadOnly: boolean }) {
     return (
         <Input readOnly={isReadOnly}
+               onChange={(e) => onChange(e.target.value)}
                defaultValue={text}
                autoComplete="off"
                data-protonpass-ignore="true"
@@ -46,38 +47,74 @@ export default function ProviderEntry(data: {
     const [isReadOnly, setReadonly] = useState(true);
     const [models, setModels] = useState(data.models ?? []);
 
+    const [name, setName] = useState(data.name);
+    const [endpoint, setEndpoint] = useState(data.endpoint ?? "");
+    const [saving, setSaving] = useState(false);
+
     return (
         <div className="flex flex-col gap-2 bg-accent rounded-lg p-4 w-full">
             <div className="flex flex-row gap-2">
                 {provider && <Image src={provider.icon} alt={provider.alt} width={provider.width} height={provider.height} className={provider.iconClass}/> }
-                <ProviderText text={data.name} isReadOnly={isReadOnly}/>
+                <ProviderText text={data.name} onChange={setName} isReadOnly={isReadOnly}/>
 
-                <Button disabled={!isReadOnly} onClick={async () => {
+                <Button variant="ghost" disabled={!isReadOnly} onClick={async () => {
                     const res = await deleteSetting(data.id);
-                    if (res.ok) toast.success(res.message);
+                    if(res.ok) toast.success(res.message);
                     else toast.error(res.message);
                 }} className="rounded-lg cursor-pointer">
                     <Trash/>
                 </Button>
 
-                <Button onClick={() => {
-                    if (!isReadOnly) {
-                        const cleaned = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
-                        const removed = models.length - cleaned.length;
+                <Button variant="ghost" disabled={!isReadOnly} onClick={async () => {
+                    try {
+                        await navigator.clipboard.writeText(JSON.stringify(
+                            { name: data.name, endpoint: data.endpoint ?? "", models: data.models ?? [] },
+                        null, 4));
 
-                        if (removed > 0) {
-                            setModels(cleaned);
-                            toast.info(`Removed ${removed} duplicate or empty model${removed === 1 ? "" : "s"}`);
-                        }
+                        toast.success("Copied to clipboard");
+                    } catch {
+                        toast.error("Failed to copy to clipboard");
                     }
-                    setReadonly((r) => !r);
-                }} className="ml-auto rounded-lg cursor-pointer">{isReadOnly ? <Pencil/> : <Check/>}</Button>
+                }}
+                        className="rounded-lg cursor-pointer">
+                    <Copy/>
+                </Button>
+
+                <Button variant="ghost" disabled={saving} onClick={async () => {
+                    if(isReadOnly) { setReadonly(false); return; }
+
+                    const cleaned = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
+                    const removed = models.length - cleaned.length;
+
+                    const original = { name: data.name, endpoint: data.endpoint ?? "", models: data.models ?? [] };
+                    const current  = { name: name.trim(), endpoint: endpoint.trim(), models: cleaned };
+
+                    if (JSON.stringify(original) === JSON.stringify(current)) {
+                        setReadonly(true);
+                        toast.info("No changes detected");
+                        return;
+                    }
+
+                    if (removed > 0) {
+                        setModels(cleaned);
+                        toast.info(`Removed ${removed} duplicate or empty model${removed === 1 ? "" : "s"}`);
+                    }
+
+                    setSaving(true);
+                    const res = await updateSetting(data.id, { name: name.trim(), endpoint: endpoint.trim(), models: cleaned });
+                    setSaving(false);
+
+                    if (res.ok) {
+                        toast.success(res.message);
+                        setReadonly(true);
+                    } else toast.error(res.message);   // stay in edit mode so they can retry
+                }} className="rounded-lg">{isReadOnly ? <Pencil/> : <Check/>}</Button>
             </div>
 
             { data.endpoint &&
                 <div className="flex flex-row gap-2">
                     <Label className="md:text-base">Endpoint: </Label>
-                    <ProviderText text={data.endpoint} isReadOnly={isReadOnly}/>
+                    <ProviderText text={data.endpoint} onChange={setEndpoint} isReadOnly={isReadOnly}/>
                 </div>
             }
 

@@ -17,6 +17,23 @@ export async function listSettings() {
     return db.select().from(providerSettings).where(eq(providerSettings.userId, userId)).orderBy(desc(providerSettings.createdAt));
 }
 
+export async function updateSetting(id: string, data: { name: string; endpoint: string; models: string[] }) {
+    const userId = await requireUserId();
+    try {
+        const [row] = await db.update(providerSettings)
+            .set({ name: data.name, endpoint: data.endpoint, models: data.models })
+            .where(and(eq(providerSettings.id, id), eq(providerSettings.userId, userId)))
+            .returning({ name: providerSettings.name });
+
+        if (!row) return { ok: false as const, message: "Provider not found" };
+        revalidatePath("/");
+        return { ok: true as const, message: `Saved "${row.name}"` };
+    } catch (e) {
+        console.error(e);
+        return { ok: false as const, message: "Couldn't save changes" };
+    }
+}
+
 export async function createSetting(data: {
     name: string; provider: string; endpoint?: string; apiKey?: string; models?: string[]
 }) {
