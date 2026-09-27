@@ -11,20 +11,7 @@ import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
 import { toast } from "sonner";
 import {deleteSetting, updateSetting} from "@/app/actions/settings";
-
-type Corpo = { icon: string; alt: string, className?: string };
-
-const corpos: Record<string, Corpo> = {
-    openai: { icon: "/icons/openai.svg", alt: "OpenAI logo", className: "invert dark:invert-0" },
-    anthropic: { icon: "/icons/anthropic.svg", alt: "Anthropic logo" },
-    google: { icon: "/icons/google.svg", alt: "Google logo" },
-    "z-ai": { icon: "/icons/zai.svg", alt: "ZAI logo", className: "dark:invert" },
-    deepseek: { icon: "/icons/deepseek.svg", alt: "DeepSeek logo" },
-    qwen: { icon: "/icons/qwen.svg", alt: "Qwen logo" },
-    "x-ai": { icon: "/icons/xai.svg", alt: "XAI logo" },
-    meta: { icon: "/icons/meta.svg", alt: "Meta logo" },
-    bytedance: { icon: "/icons/bytedance.svg", alt: "Bytedance logo" }
-};
+import {corpos} from "@/components/providers/corpos";
 
 function ProviderText({ text, onChange, isReadOnly } : { text: string, onChange: (v: string) => void; isReadOnly: boolean }) {
     return (

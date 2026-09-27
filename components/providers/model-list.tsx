@@ -8,6 +8,9 @@ import {
 import {Button} from "@/components/ui/button";
 import {Minus, Plus} from "lucide-react";
 import {Label} from "@/components/ui/label";
+import Image from "next/image";
+import {corpos} from "@/components/providers/corpos";
+import {cn} from "cn";
 
 function ModelRow({value, onChange, onRemove, isAlone, templates}: { value: string, onChange: (v: string) => void; onRemove: () => void, isAlone: boolean, templates: string[] }) {
     return (
@@ -21,11 +24,19 @@ function ModelRow({value, onChange, onRemove, isAlone, templates}: { value: stri
 
                 <ComboboxContent className="rounded-lg">
                     <ComboboxList>
-                        {(template: string) => (
-                            <ComboboxItem key={template} value={template}>
-                                {template}
-                            </ComboboxItem>
-                        )}
+                        {(template: string) => {
+                            const corpo = corpos[template.split('/')[0]];
+
+                            return (
+                                <ComboboxItem key={template} value={template}>
+                                    <Image src={corpo?.icon ?? "/icons/unknown.svg"}
+                                           alt={corpo?.alt ?? "Unknown"}
+                                           className={cn("mr-2", corpo ? corpo.className : "dark:invert")}
+                                           width={16} height={16}/>
+                                    {template}
+                                </ComboboxItem>
+                            );
+                        }}
                     </ComboboxList>
                 </ComboboxContent>
             </Combobox>
