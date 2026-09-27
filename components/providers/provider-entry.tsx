@@ -9,37 +9,27 @@ import {Pencil} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
+import { toast } from "sonner";
 
 type Corpo = { icon: string; alt: string, className?: string };
 
 const corpos: Record<string, Corpo> = {
     openai: { icon: "/icons/openai.svg", alt: "OpenAI logo", className: "invert dark:invert-0" },
     anthropic: { icon: "/icons/anthropic.svg", alt: "Anthropic logo" },
+    google: { icon: "/icons/google.svg", alt: "Google logo" },
+    "z-ai": { icon: "/icons/zai.svg", alt: "ZAI logo", className: "dark:invert" }
 };
 
-function ProviderText({ text } : { text: string }) {
-    const [isReadonly, setReadonly] = useState(true);
-    const inpRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        if(!isReadonly)
-            inpRef.current?.focus();
-    }, [isReadonly]);
-
+function ProviderText({ text, isReadOnly } : { text: string, isReadOnly: boolean }) {
     return (
-        <div className="flex flex-1 flex-row items-center gap-2">
-            <Input ref={inpRef}
-                   readOnly={isReadonly}
-                   defaultValue={text}
-                   autoComplete="off"
-                   data-protonpass-ignore="true"
-                   data-1p-ignore
-                   data-lpignore="true"
-                   data-bwignore
-                   className="dark:bg-transparent read-only:caret-transparent read-only:cursor-default read-only:focus-visible:ring-0 read-only:focus-visible:border-transparent border-0 px-0 text-foreground md:text-base"/>
-
-            <Button onClick={() => setReadonly((r) => !r)} className="rounded-lg"><Pencil/></Button>
-        </div>
+        <Input readOnly={isReadOnly}
+               defaultValue={text}
+               autoComplete="off"
+               data-protonpass-ignore="true"
+               data-1p-ignore
+               data-lpignore="true"
+               data-bwignore
+               className="dark:bg-transparent read-only:caret-transparent read-only:cursor-default read-only:focus-visible:ring-0 read-only:focus-visible:border-transparent border-0 px-0 text-foreground md:text-base"/>
     );
 }
 
@@ -54,24 +44,34 @@ export default function ProviderEntry(data: {
         <div className="flex flex-col gap-2 bg-accent rounded-lg p-4 w-full">
             <div className="flex flex-row gap-2">
                 {provider && <Image src={provider.icon} alt={provider.alt} width={provider.width} height={provider.height} className={provider.iconClass}/> }
-                <ProviderText text={data.name}/>
+                <ProviderText text={data.name} isReadOnly={isReadOnly}/>
+
+                <Button onClick={() => {
+                    if (!isReadOnly) {
+                        const cleaned = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
+                        const removed = models.length - cleaned.length;
+
+                        if (removed > 0) {
+                            setModels(cleaned);
+                            toast.info(`Removed ${removed} duplicate or empty model${removed === 1 ? "" : "s"}`);
+                        }
+                    }
+                    setReadonly((r) => !r);
+                }} className="ml-auto rounded-lg"><Pencil/></Button>
             </div>
 
             { data.endpoint &&
                 <div className="flex flex-row gap-2">
                     <Label className="md:text-base">Endpoint: </Label>
-                    <ProviderText text={data.endpoint}/>
+                    <ProviderText text={data.endpoint} isReadOnly={isReadOnly}/>
                 </div>
             }
 
             { data.models &&
                 <div className="flex flex-col gap-2">
-                    <div className="flex flex-row gap-2">
-                        <Label className="md:text-base">Models: </Label>
-                        <Button onClick={() => setReadonly((r) => !r)} className="ml-auto rounded-lg"><Pencil/></Button>
-                    </div>
+                    <Label className="md:text-base">Models: </Label>
 
-                    { isReadOnly && data.models?.map((model) => {
+                    { isReadOnly && models.map((model) => {
                         const corpo = corpos[data.provider === "openai" ? "openai" : model.split('/')[0]];
 
                         return (
@@ -87,7 +87,7 @@ export default function ProviderEntry(data: {
 
                     { !isReadOnly &&
                         <div className="flex flex-col gap-2">
-                            <ModelList models={data.models} templates={templates[data.provider]} onChange={setModels}/>
+                            <ModelList models={models} templates={templates[data.provider] ?? []} onChange={setModels}/>
                         </div>
                     }
                 </div>
