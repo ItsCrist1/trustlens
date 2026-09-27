@@ -5,11 +5,12 @@ import {Label} from "@/components/ui/label";
 import Image from "next/image";
 import {getProvider} from "@/components/providers/provider-select";
 import {Button} from "@/components/ui/button";
-import {Check, Pencil} from "lucide-react";
-import {useEffect, useRef, useState} from "react";
+import {Check, Pencil, Trash} from "lucide-react";
+import {useState} from "react";
 import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
 import { toast } from "sonner";
+import {deleteSetting} from "@/app/actions/settings";
 
 type Corpo = { icon: string; alt: string, className?: string };
 
@@ -39,7 +40,7 @@ function ProviderText({ text, isReadOnly } : { text: string, isReadOnly: boolean
 }
 
 export default function ProviderEntry(data: {
-    name: string; provider: string; endpoint?: string; models?: string[]
+    id: string, name: string; provider: string; endpoint?: string; models?: string[]
 }) {
     const provider = getProvider(data.provider);
     const [isReadOnly, setReadonly] = useState(true);
@@ -50,6 +51,14 @@ export default function ProviderEntry(data: {
             <div className="flex flex-row gap-2">
                 {provider && <Image src={provider.icon} alt={provider.alt} width={provider.width} height={provider.height} className={provider.iconClass}/> }
                 <ProviderText text={data.name} isReadOnly={isReadOnly}/>
+
+                <Button disabled={!isReadOnly} onClick={async () => {
+                    const res = await deleteSetting(data.id);
+                    if (res.ok) toast.success(res.message);
+                    else toast.error(res.message);
+                }}>
+                    <Trash/>
+                </Button>
 
                 <Button onClick={() => {
                     if (!isReadOnly) {
