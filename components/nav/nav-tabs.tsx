@@ -18,10 +18,10 @@ export function NavTabs({ orientation }: { orientation: "horizontal" | "vertical
             {tabs.map(t => (
                 <Link key={t.href} href={t.href}
                       aria-current={pathname === t.href ? "page" : undefined}
-                      className="... aria-[current=page]:bg-accent rounded-lg">
-                    <div className="flex items-center gap-2">
-                        <t.icon/>
-                        {t.label}
+                      className="rounded-lg px-3 py-2 aria-[current=page]:bg-accent @max-[120px]:px-0">
+                    <div className="flex items-center gap-2 @max-[120px]:justify-center">
+                        <t.icon className="shrink-0"/>
+                        <span className="@max-[120px]:hidden">{t.label}</span>
                     </div>
                 </Link>
             ))}

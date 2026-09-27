@@ -1,0 +1,43 @@
+"use client"
+
+import { useState } from "react";
+import {clampSidebarWidth, SIDEBAR_WIDTH_COOKIE} from "@/components/nav/orientation";
+
+export function ResizableAside({ initialWidth, children }: { initialWidth: number; children: React.ReactNode }) {
+    const [width, setWidth] = useState(initialWidth);
+
+    function startDrag(e: React.PointerEvent) {
+        e.preventDefault();
+        const startX = e.clientX, startWidth = width;
+        let current = startWidth;
+        document.body.style.userSelect = "none";
+        document.body.style.cursor = "col-resize";
+
+        const MIN = 160, MAX = 400;
+        const COLLAPSED = 64;
+        const SNAP_BELOW = 120;
+
+        const onMove = (ev: PointerEvent) => {
+            current = clampSidebarWidth(startWidth + ev.clientX - startX);
+            setWidth(current);
+        };
+
+        const onUp = () => {
+            window.removeEventListener("pointermove", onMove);
+            document.body.style.userSelect = "";
+            document.body.style.cursor = "";
+            document.cookie = `${SIDEBAR_WIDTH_COOKIE}=${Math.round(current)}; path=/; max-age=31536000`;
+        };
+        window.addEventListener("pointermove", onMove);
+        window.addEventListener("pointerup", onUp, { once: true });
+    }
+
+    return (
+        <aside style={{ width }} className="@container sticky top-0 flex h-screen shrink-0 flex-col gap-6 border-r bg-sidebar p-3">
+            {children}
+            <div onPointerDown={startDrag}
+                 onDoubleClick={() => setWidth(208)}
+                 className="absolute inset-y-0 -right-1 w-2 cursor-col-resize hover:bg-border/60 transition-colors"/>
+        </aside>
+    );
+}

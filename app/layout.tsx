@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 import { cookies } from "next/headers";
 import { SideBar } from "@/components/nav/side-bar";
-import { ORIENTATION_COOKIE, type Orientation } from "@/components/nav/orientation";
+import { ORIENTATION_COOKIE, SIDEBAR_WIDTH_COOKIE, clampSidebarWidth, type Orientation } from "@/components/nav/orientation";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -19,8 +19,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+    const cookieStore = await cookies();
+
     const orientation: Orientation =
-        (await cookies()).get(ORIENTATION_COOKIE)?.value === "vertical" ? "vertical" : "horizontal";
+        (await cookieStore).get(ORIENTATION_COOKIE)?.value === "vertical" ? "vertical" : "horizontal";
+
+    const width = clampSidebarWidth(Number(cookieStore.get(SIDEBAR_WIDTH_COOKIE)?.value ?? NaN));
 
     return (
         <html lang="en"
@@ -31,9 +35,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Providers>
             <ThemeProvider>
                 <Toaster/>
-                <TopBar orientation={orientation}/>
-                <div className="flex flex-1">
-                    {orientation === "vertical" && <SideBar/>}
+                <div className={cn("flex flex-1", orientation === "horizontal" ? "flex-col" : "flex-row")}>
+                    {orientation === "horizontal" ? <TopBar/> : <SideBar width={width}/>}
                     <main className="flex-1 min-w-0">{children}</main>
                 </div>
             </ThemeProvider>

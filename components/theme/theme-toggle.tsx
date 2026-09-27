@@ -9,7 +9,7 @@ export function ThemeToggle() {
 
     return (
         <Button
-            className="rounded-full cursor-pointer"
+            className="size-10 rounded-full cursor-pointer"
             variant="outline"
             size="icon"
             aria-label="Toggle theme"
