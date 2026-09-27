@@ -17,7 +17,7 @@ export async function listSettings() {
 }
 
 export async function createSetting(data: {
-    name: string; provider: string; endpoint?: string; apiKey?: string; model?: string[]
+    name: string; provider: string; endpoint?: string; apiKey?: string; models?: string[]
 }) {
     const userId = await requireUserId();
     try {

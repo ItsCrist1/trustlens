@@ -96,7 +96,7 @@ export function ProviderSelect() {
                 [provider]: { ...s[provider] ?? emptySettings, ...patch}
             }))}/>
 
-            <Button className="rounded-full cursor-pointer" onClick={handleCreate} disabled={(settings[provider] ?? emptySettings).apiKey === ""}><Plus/>Create</Button>
+            <Button className="rounded-full cursor-pointer" onClick={handleCreate} disabled={saving || (settings[provider] ?? emptySettings).apiKey === ""}><Plus/>Create</Button>
         </div>
     );
 }
