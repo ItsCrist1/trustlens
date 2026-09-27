@@ -14,7 +14,7 @@ import { ORIENTATION_COOKIE, SIDEBAR_WIDTH_COOKIE, clampSidebarWidth, type Orien
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://floweratrustlens.tech"),
+    metadataBase: new URL("https://www.floweratrustlens.tech"),
     title: {
         default: "Flowera TrustLens",
         template: "%s · TrustLens",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
             { url: "/icons/flowera_white.png", media: "(prefers-color-scheme: dark)" },
         ],
 
-        apple: "/icons/flowera.png"
+        apple: "/icons/flowera_white.png"
     },
 
     applicationName: "TrustLens",
