@@ -5,7 +5,7 @@ import {Label} from "@/components/ui/label";
 import Image from "next/image";
 import {getProvider} from "@/components/providers/provider-select";
 import {Button} from "@/components/ui/button";
-import {Pencil} from "lucide-react";
+import {Check, Pencil} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
@@ -17,7 +17,12 @@ const corpos: Record<string, Corpo> = {
     openai: { icon: "/icons/openai.svg", alt: "OpenAI logo", className: "invert dark:invert-0" },
     anthropic: { icon: "/icons/anthropic.svg", alt: "Anthropic logo" },
     google: { icon: "/icons/google.svg", alt: "Google logo" },
-    "z-ai": { icon: "/icons/zai.svg", alt: "ZAI logo", className: "dark:invert" }
+    "z-ai": { icon: "/icons/zai.svg", alt: "ZAI logo", className: "dark:invert" },
+    deepseek: { icon: "/icons/deepseek.svg", alt: "DeepSeek logo" },
+    qwen: { icon: "/icons/qwen.svg", alt: "Qwen logo" },
+    "x-ai": { icon: "/icons/xai.svg", alt: "XAI logo" },
+    meta: { icon: "/icons/meta.svg", alt: "Meta logo" },
+    bytedance: { icon: "/icons/bytedance.svg", alt: "Bytedance logo" }
 };
 
 function ProviderText({ text, isReadOnly } : { text: string, isReadOnly: boolean }) {
@@ -57,7 +62,7 @@ export default function ProviderEntry(data: {
                         }
                     }
                     setReadonly((r) => !r);
-                }} className="ml-auto rounded-lg"><Pencil/></Button>
+                }} className="ml-auto rounded-lg">{isReadOnly ? <Pencil/> : <Check/>}</Button>
             </div>
 
             { data.endpoint &&
