@@ -30,6 +30,7 @@ export default function LoginButton() {
                 <Image src={user?.image ?? "/icons/unknown-user.svg"}
                        alt={user?.name || "Unknown User"}
                        fill
+                       sizes="40px"
                        className="object-cover"/>
             </DropdownMenuTrigger>
 

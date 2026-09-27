@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ConfigProps } from "@/components/provider-select";
-import ModelList from "@/components/provider-configs/model-list";
+import type { ConfigProps } from "@/components/providers/provider-select";
+import ModelList from "@/components/providers/model-list";
 
 const templates = [
     "gpt-6-sol",

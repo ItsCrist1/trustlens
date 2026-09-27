@@ -13,10 +13,6 @@ export function ResizableAside({ initialWidth, children }: { initialWidth: numbe
         document.body.style.userSelect = "none";
         document.body.style.cursor = "col-resize";
 
-        const MIN = 160, MAX = 400;
-        const COLLAPSED = 64;
-        const SNAP_BELOW = 120;
-
         const onMove = (ev: PointerEvent) => {
             current = clampSidebarWidth(startWidth + ev.clientX - startX);
             setWidth(current);

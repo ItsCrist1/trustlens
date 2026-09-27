@@ -56,8 +56,7 @@ export default function ModelList({ models, templates, onChange }: {
                     onChange={(v) => onChange(models.map((x, j) => (j === i ? v : x)))}
                     onRemove={() => onChange(models.filter((_, j) => j !== i))}
                     isAlone={models.length === 1}
-                    templates={templates}
-                />
+                    templates={templates}/>
             ))}
         </>
     );

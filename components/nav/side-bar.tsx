@@ -9,7 +9,7 @@ export function SideBar({width}: {width: number}) {
     return (
         <ResizableAside initialWidth={width}>
             <Image src="/flowera.png" width={120} height={120} alt="Flowera Logo"
-                   className="dark:invert @max-[120px]:hidden"/>
+                   className="dark:invert @max-[120px]:hidden" loading="eager"/>
             <Image src="/icons/flowera.png" width={40} height={40} alt="Flowera Logo"
                    className="dark:invert hidden @max-[120px]:block"/>
 

@@ -3,8 +3,8 @@
 import { ComponentType, useState } from "react";
 import Image from "next/image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { OpenRouterConfig } from "@/components/provider-configs/openrouter-config";
-import {OpenAIConfig} from "@/components/provider-configs/openai-config";
+import { OpenRouterConfig } from "@/components/providers/openrouter-config";
+import {OpenAIConfig} from "@/components/providers/openai-config";
 import {Button} from "@/components/ui/button";
 import {Plus} from "lucide-react";
 import {createSetting} from "@/app/actions/settings";
@@ -19,7 +19,7 @@ export type ConfigProps = {
 
 const emptySettings: ProviderSettings = { name: "", endpoint: "", apiKey: "", models: [""] };
 
-const providers = [
+export const providers = [
     {
         value: "openrouter", name: "OpenRouter",
         icon: "/icons/openrouter.svg",
@@ -36,6 +36,10 @@ const providers = [
         config: OpenAIConfig
     }
 ] satisfies { value: string; name: string; icon: string; width: number, height: number, iconClass: string; alt: string; config: ComponentType<ConfigProps>}[];
+
+export function getProvider(value: string) {
+    return providers.find((p) => p.value === value);
+}
 
 function ProviderLabel({ value }: { value: string }) {
     const p = providers.find((p) => p.value === value);
@@ -92,7 +96,7 @@ export function ProviderSelect() {
                 [provider]: { ...s[provider] ?? emptySettings, ...patch}
             }))}/>
 
-            <Button className="rounded-full cursor-pointer" onClick={handleCreate}><Plus/>Create</Button>
+            <Button className="rounded-full cursor-pointer" onClick={handleCreate} disabled={(settings[provider] ?? emptySettings).apiKey === ""}><Plus/>Create</Button>
         </div>
     );
 }
