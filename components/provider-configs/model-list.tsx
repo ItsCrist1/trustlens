@@ -42,7 +42,12 @@ export default function ModelList({ models, templates, onChange }: {
 }) {
     return (
         <>
-            <Label className="whitespace-nowrap">{(models.length === 1 ? "Model" : "Models") + ':'}</Label>
+            <div className="flex items-center gap-2">
+                <Label className="whitespace-nowrap">{(models.length === 1 ? "Model" : "Models") + ':'}</Label>
+                <Button className="rounded-lg ml-auto" onClick={() => onChange([...models, ""])}>
+                    <Plus/> Add Model
+                </Button>
+            </div>
 
             {models.map((m, i) => (
                 <ModelRow
@@ -54,10 +59,6 @@ export default function ModelList({ models, templates, onChange }: {
                     templates={templates}
                 />
             ))}
-
-            <Button className="rounded-lg" onClick={() => onChange([...models, ""])}>
-                <Plus/> Add Model
-            </Button>
         </>
     );
 }

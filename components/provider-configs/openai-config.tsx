@@ -1,8 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { ConfigProps } from "@/components/provider-select";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import ModelList from "@/components/provider-configs/model-list";
 
 const templates = [
