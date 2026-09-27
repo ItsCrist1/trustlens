@@ -32,6 +32,11 @@ export function OpenAIConfig({settings, onChange}: ConfigProps) {
     return (
         <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
+                <Label className="whitespace-nowrap">Name:</Label>
+                <Input type="text" className="rounded-lg" placeholder={settings.models.join(", ") || "Evaluated Models"} value={settings.name} onChange={(e) => onChange({ name: e.target.value })}/>
+            </div>
+
+            <div className="flex flex-row gap-3">
                 <Label>Endpoint:</Label>
                 <Input type="text" className="rounded-lg" placeholder="https://api.openai.com/v1" value={settings.endpoint} onChange={(e) => onChange({ endpoint: e.target.value })}/>
             </div>

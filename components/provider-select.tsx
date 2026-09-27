@@ -10,14 +10,14 @@ import {Plus} from "lucide-react";
 import {createSetting} from "@/app/actions/settings";
 import {toast} from "sonner";
 
-export type ProviderSettings = { endpoint: string; apiKey: string; models: string[] };
+export type ProviderSettings = { name: string, endpoint: string; apiKey: string; models: string[] };
 
 export type ConfigProps = {
     settings: ProviderSettings;
     onChange: (patch: Partial<ProviderSettings>) => void;
 };
 
-const emptySettings: ProviderSettings = { endpoint: "", apiKey: "", models: [""] };
+const emptySettings: ProviderSettings = { name: "", endpoint: "", apiKey: "", models: [""] };
 
 const providers = [
     {
@@ -53,16 +53,15 @@ export function ProviderSelect() {
     const [provider, setProvider] = useState("openrouter");
     const [settings, setSettings] = useState<Record<string, ProviderSettings>>({});
 
-    const [name, setName] = useState("");
     const [saving, setSaving] = useState(false);
 
     async function handleCreate() {
         setSaving(true)
         try {
-            const res = await createSetting({ name, provider, ...(settings[provider] ?? emptySettings) });
+            const res = await createSetting({ provider, ...(settings[provider] ?? emptySettings) });
             if(res.ok) {
                 toast.success(res.message);
-                setName("");
+                setSettings((s) => ({ ...s, [provider]: { ...(s[provider] ?? emptySettings), name: "" } }))
             } else
                 toast.error(res.message);
         } finally {
