@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import {Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList} from "@/components/ui/combobox";
-import {useState} from "react";
 import {Label} from "@/components/ui/label";
 import type { ConfigProps } from "@/components/provider-select";
 
@@ -22,7 +21,7 @@ export function OpenRouterConfig({settings, onChange}: ConfigProps) {
         <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
                 <Label className="whitespace-nowrap">API Key:</Label>
-                <Input type="text" className="rounded-lg" placeholder="OpenRouter API Key" value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
+                <Input type="password" className="rounded-lg" placeholder="OpenRouter API Key" value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
             </div>
 
             <div className="flex flex-row gap-3">
