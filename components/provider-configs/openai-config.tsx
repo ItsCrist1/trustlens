@@ -1,13 +1,9 @@
 import { Input } from "@/components/ui/input";
-import {
-    Combobox,
-    ComboboxContent,
-    ComboboxInput,
-    ComboboxItem,
-    ComboboxList,
-} from "@/components/ui/combobox";
-import {Label} from "@/components/ui/label";
+import { Label } from "@/components/ui/label";
 import type { ConfigProps } from "@/components/provider-select";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import ModelList from "@/components/provider-configs/model-list";
 
 const templates = [
     "gpt-6-sol",
@@ -45,27 +41,7 @@ export function OpenAIConfig({settings, onChange}: ConfigProps) {
                 <Input type="password" className="rounded-lg" placeholder="sk-proj-abc123def..." value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
             </div>
 
-            <div className="flex flex-row gap-3">
-                <Label className="whitespace-nowrap">Model:</Label>
-
-                <Combobox
-                    inputValue={settings.model}
-                    onInputValueChange={(model) => onChange({ model })}
-                    items={templates}
-                    openOnInputClick={false}>
-                    <ComboboxInput className="flex-1 rounded-lg" placeholder="Enter or choose a model" />
-
-                    <ComboboxContent className="rounded-lg">
-                        <ComboboxList>
-                            {(template: string) => (
-                                <ComboboxItem key={template} value={template}>
-                                    {template}
-                                </ComboboxItem>
-                            )}
-                        </ComboboxList>
-                    </ComboboxContent>
-                </Combobox>
-            </div>
+            <ModelList models={settings.models} templates={templates} onChange={(models) => onChange({ models })}/>
         </div>
     );
 }

@@ -5,15 +5,19 @@ import Image from "next/image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { OpenRouterConfig } from "@/components/provider-configs/openrouter-config";
 import {OpenAIConfig} from "@/components/provider-configs/openai-config";
+import {Button} from "@/components/ui/button";
+import {Plus} from "lucide-react";
+import {createSetting} from "@/app/actions/settings";
+import {toast} from "sonner";
 
-export type ProviderSettings = { endpoint: string; apiKey: string; model: string };
+export type ProviderSettings = { endpoint: string; apiKey: string; models: string[] };
 
 export type ConfigProps = {
     settings: ProviderSettings;
     onChange: (patch: Partial<ProviderSettings>) => void;
 };
 
-const emptySettings: ProviderSettings = { endpoint: "", apiKey: "", model: "" };
+const emptySettings: ProviderSettings = { endpoint: "", apiKey: "", models: [""] };
 
 const providers = [
     {
@@ -49,6 +53,23 @@ export function ProviderSelect() {
     const [provider, setProvider] = useState("openrouter");
     const [settings, setSettings] = useState<Record<string, ProviderSettings>>({});
 
+    const [name, setName] = useState("");
+    const [saving, setSaving] = useState(false);
+
+    async function handleCreate() {
+        setSaving(true)
+        try {
+            const res = await createSetting({ name, provider, ...(settings[provider] ?? emptySettings) });
+            if(res.ok) {
+                toast.success(res.message);
+                setName("");
+            } else
+                toast.error(res.message);
+        } finally {
+            setSaving(false);
+        }
+    }
+
     const current = providers.find((p) => p.value === provider)!;
     const Config = current.config;
 
@@ -71,6 +92,8 @@ export function ProviderSelect() {
                 ...s,
                 [provider]: { ...s[provider] ?? emptySettings, ...patch}
             }))}/>
+
+            <Button className="rounded-full cursor-pointer" onClick={handleCreate}><Plus/>Create</Button>
         </div>
     );
 }

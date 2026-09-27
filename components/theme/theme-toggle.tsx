@@ -9,13 +9,14 @@ export function ThemeToggle() {
 
     return (
         <Button
+            className="rounded-full cursor-pointer"
             variant="outline"
             size="icon"
             aria-label="Toggle theme"
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
 
-            <Sun className="dark:hidden" />
-            <Moon className="hidden dark:block" />
+            <Sun className="dark:hidden"/>
+            <Moon className="hidden dark:block"/>
         </Button>
     );
 }

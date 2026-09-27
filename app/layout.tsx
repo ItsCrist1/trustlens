@@ -3,8 +3,9 @@ import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import {TopBar} from "@/components/top-bar";
+import { TopBar } from "@/components/top-bar";
 import Providers from "@/components/providers"
+import { Toaster } from "@/components/ui/sonner";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <body className="min-h-full flex flex-col">
         <Providers>
             <ThemeProvider>
+                <Toaster/>
                 <TopBar/>
                 {children}
             </ThemeProvider>

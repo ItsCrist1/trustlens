@@ -6,7 +6,7 @@ export const users = pgTable("user", {
     name: text("name"),
     email: text("email").unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
-    image: text("image"),
+    image: text("image")
 });
 
 export const accounts = pgTable("account", {
@@ -20,24 +20,35 @@ export const accounts = pgTable("account", {
     token_type: text("token_type"),
     scope: text("scope"),
     id_token: text("id_token"),
-    session_state: text("session_state"),
+    session_state: text("session_state")
 }, (a) => [primaryKey({ columns: [a.provider, a.providerAccountId] })])
 
 export const sessions = pgTable("session", {
     sessionToken: text("sessionToken").primaryKey(),
     userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull()
 })
 
 export const verificationTokens = pgTable("verificationToken", {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull()
 }, (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })])
 
 export const userPreferences = pgTable("user_preferences", {
     userId: text("userId").primaryKey().references(() => users.id, { onDelete: "cascade" }),
     selectedProvider: text("selectedProvider").default("openrouter"),
     providerSettings: jsonb("providerSettings").$type<Record<string, { endpoint: string; model: string }>>().default({}),
-    updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow()
+})
+
+export const providerSettings = pgTable("provider_settings", {
+    id: text("id").primaryKey().$default(() => crypto.randomUUID()),
+    userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    apiKey: text("apiKey").notNull().default(""),
+    provider: text("provider").notNull(),
+    endpoint: text("endpoint").notNull().default(""),
+    models: text("models").array().notNull().default([]),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow()
 })
