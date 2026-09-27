@@ -1,8 +1,6 @@
 import {
-    Combobox,
     ComboboxContent,
     ComboboxInput,
-    ComboboxItem,
     ComboboxList,
 } from "@/components/ui/combobox";
 import {Button} from "@/components/ui/button";
@@ -11,16 +9,29 @@ import {Label} from "@/components/ui/label";
 import Image from "next/image";
 import {corpos} from "@/components/providers/corpos";
 import {cn} from "cn";
+import {Autocomplete} from "@base-ui/react";
+import {InputGroupAddon} from "@/components/ui/input-group";
 
 function ModelRow({value, onChange, onRemove, isAlone, templates}: { value: string, onChange: (v: string) => void; onRemove: () => void, isAlone: boolean, templates: string[] }) {
+    const corpo = corpos[value.split("/")[0]];
+
     return (
         <div className="flex flex-row gap-3">
-            <Combobox
-                inputValue={value}
-                onInputValueChange={onChange}
+            <Autocomplete.Root
+                value={value}
+                onValueChange={onChange}
                 items={templates}
                 openOnInputClick={false}>
-                <ComboboxInput className="flex-1 rounded-lg" placeholder="Enter or choose a model" />
+                <ComboboxInput className="flex-1 rounded-lg" placeholder="Enter or choose a model">
+                    {value && (
+                        <InputGroupAddon align="inline-start">
+                            <Image src={corpo?.icon ?? "/icons/unknown.svg"}
+                                   alt={corpo?.alt ?? "Unknown"}
+                                   className={corpo ? corpo?.className : "dark:invert"}
+                                   width={16} height={16}/>
+                        </InputGroupAddon>
+                    )}
+                </ComboboxInput>
 
                 <ComboboxContent className="rounded-lg">
                     <ComboboxList>
@@ -28,18 +39,19 @@ function ModelRow({value, onChange, onRemove, isAlone, templates}: { value: stri
                             const corpo = corpos[template.split('/')[0]];
 
                             return (
-                                <ComboboxItem key={template} value={template}>
+                                <Autocomplete.Item key={template} value={template}
+                                                   className="flex flex-row items-center gap-2 cursor-pointer rounded-md px-2 py-1.5 text-xs outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground">
                                     <Image src={corpo?.icon ?? "/icons/unknown.svg"}
                                            alt={corpo?.alt ?? "Unknown"}
                                            className={cn("mr-2", corpo ? corpo.className : "dark:invert")}
                                            width={16} height={16}/>
                                     {template}
-                                </ComboboxItem>
+                                </Autocomplete.Item>
                             );
                         }}
                     </ComboboxList>
                 </ComboboxContent>
-            </Combobox>
+            </Autocomplete.Root>
 
             <Button className="rounded-lg cursor-pointer" onClick={onRemove} disabled={isAlone}><Minus/></Button>
         </div>

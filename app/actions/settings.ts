@@ -25,6 +25,8 @@ export async function updateSetting(id: string, data: { name: string; endpoint: 
             .where(and(eq(providerSettings.id, id), eq(providerSettings.userId, userId)))
             .returning({ name: providerSettings.name });
 
+        revalidatePath("/");
+
         if (!row) return { ok: false as const, message: "Provider not found" };
         revalidatePath("/");
         return { ok: true as const, message: `Saved "${row.name}"` };

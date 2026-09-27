@@ -1,5 +1,3 @@
-import {Input} from "@/components/ui/input";
-
 type Corpo = { icon: string; alt: string, className?: string };
 
 export const corpos: Record<string, Corpo> = {

@@ -110,7 +110,7 @@ export default function ProviderEntry(data: {
                     <Label className="md:text-base">Model{models.length === 1 ? '' : 's'}:</Label>
 
                     { isReadOnly && models.map((model) => {
-                        const corpo = corpos[data.provider === "openai" ? "openai" : model.split('/')[0]];
+                        const corpo = corpos[model.split('/')[0]];
 
                         return (
                             <div key={model} className="flex flex-row gap-2">
@@ -118,7 +118,7 @@ export default function ProviderEntry(data: {
                                        alt={corpo?.alt ?? "Unknown"}
                                        className={corpo? corpo.className : "dark:invert"}
                                        width={20} height={20}/>
-                                <Label className="text-lg">{data.provider === "openai" ? model : model.split('/')[1]}</Label>
+                                <Label className="text-lg">{model.split('/')[1]}</Label>
                             </div>
                         );
                     })}
