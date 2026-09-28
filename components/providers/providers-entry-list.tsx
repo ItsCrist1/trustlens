@@ -1,9 +1,9 @@
-import {listSettings} from "@/app/actions/settings";
+import type {listSettings} from "@/app/actions/settings";
 import ProviderEntry from "@/components/providers/provider-entry";
 
-export default async function ProvidersEntryList() {
-    const list = await listSettings();
+type Setting = Awaited<ReturnType<typeof listSettings>>[number];
 
+export default function ProvidersEntryList({ list }: { list: Setting[]}) {
     return (
         <div className="flex flex-col gap-4">
             { list.map((item) => (
