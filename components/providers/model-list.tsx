@@ -69,7 +69,7 @@ export default function ModelList({ models, templates, onChange, displayLabel }:
             <div className="flex items-center gap-2">
                 {displayLabel && <Label className="whitespace-nowrap">{(models.length === 1 ? "Model" : "Models") + ':'}</Label> }
                 <Button className="rounded-lg ml-auto cursor-pointer" onClick={() => onChange([...models, ""])}>
-                    <Plus/>Add Model
+                    <Plus/>
                 </Button>
             </div>
 

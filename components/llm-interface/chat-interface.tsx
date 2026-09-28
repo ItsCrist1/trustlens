@@ -12,7 +12,7 @@ import {getProvider} from "@/components/providers/provider-select";
 import {corpos} from "@/components/providers/corpos";
 import {InputGroupAddon} from "@/components/ui/input-group";
 
-type ChatConfig = { id: string; name: string; provider: string;models: string[] };
+type ChatConfig = { id: string; name: string; provider: string; models: string[] };
 
 export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
     const [messages, setMessages] = useState<ChatMsg[]>([]);

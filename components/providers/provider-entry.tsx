@@ -78,7 +78,6 @@ export default function ProviderEntry(data: {
 
                     if (JSON.stringify(original) === JSON.stringify(current)) {
                         setReadonly(true);
-                        toast.info("No changes detected");
                         return;
                     }
 
