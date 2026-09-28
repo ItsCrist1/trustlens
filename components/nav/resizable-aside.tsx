@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import {clampSidebarWidth, SIDEBAR_WIDTH_COOKIE} from "@/components/nav/orientation";
+import {clampSidebarWidth, SIDEBAR_DEFAULT, SIDEBAR_WIDTH_COOKIE} from "@/components/nav/orientation";
 
 export function ResizableAside({ initialWidth, children }: { initialWidth: number; children: React.ReactNode }) {
     const [width, setWidth] = useState(initialWidth);
@@ -32,7 +32,10 @@ export function ResizableAside({ initialWidth, children }: { initialWidth: numbe
         <aside style={{ width }} className="@container sticky top-0 flex h-screen shrink-0 flex-col gap-6 border-r bg-sidebar p-3">
             {children}
             <div onPointerDown={startDrag}
-                 onDoubleClick={() => setWidth(208)}
+                 onDoubleClick={() => {
+                     setWidth(SIDEBAR_DEFAULT);
+                     document.cookie = `${SIDEBAR_WIDTH_COOKIE}=${SIDEBAR_DEFAULT}; path=/; max-age=31536000`;
+                 }}
                  className="absolute inset-y-0 -right-1 w-2 cursor-col-resize hover:bg-border/60 transition-colors"/>
         </aside>
     );

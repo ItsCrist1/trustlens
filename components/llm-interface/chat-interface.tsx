@@ -19,10 +19,11 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    const [configId, setConfigId] = useState<string | null>(configs[0]?.id ?? null);
-    const config = configs.find((c) => c.id === configId) ?? null;
+    const [configId, setConfigId] = useState<string | null>(null);
+    const config = configs.find((c) => c.id === configId) ?? configs[0] ?? null;
 
-    const [model, setModel] = useState<string | null>(configs[0]?.models[0] ?? null);
+    const [pickedModel, setModel] = useState<string | null>(null);
+    const model = pickedModel && config?.models.includes(pickedModel) ? pickedModel : config?.models[0] ?? null;
 
     const selectedProvider = config ? getProvider(config.provider) : undefined;
     const selectedCorpo = model ? corpos[model.split("/")[0]] : undefined;
@@ -40,7 +41,7 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
             const res = await fetch("/api/llm", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ settingId: config?.id, messages: next }),
+                body: JSON.stringify({ settingId: config?.id, model, messages: next }),
             });
 
             if(!res.ok || !res.body) {
@@ -99,7 +100,7 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
                     value={config}
                     onValueChange={(c) => {
                         setConfigId(c?.id ?? null);
-                        setModel(c?.models[0] ?? null);
+                        setModel(null);
                     }}
                     itemToStringLabel={(c) => c.name}>
 

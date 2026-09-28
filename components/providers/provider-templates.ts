@@ -115,10 +115,10 @@ export const templates: Record<string, string[]> = {
         "xiaomi/mimo-v2.5",
 
         // perplex
-        "perplex/sonar",
-        "perplex/sonar-pro",
-        "perplex/sonar-reasoning-pro",
-        "perplex/sonar-deep-research",
+        "perplexity/sonar",
+        "perplexity/sonar-pro",
+        "perplexity/sonar-reasoning-pro",
+        "perplexity/sonar-deep-research",
 
         // minimax
         "minimax/MiniMax-M3.1-Flash-Preview",
@@ -152,7 +152,7 @@ export const templates: Record<string, string[]> = {
         "meta-llama/llama-3.3-70b-instruct", "meta-llama/llama-3.1-405b-instruct", "nvidia/nemotron-3-ultra-550b-a55b:free", "xiaomi/mimo-v2.5", "upstage/solar-pro4",
         "poolside/laguna-s-2.1", "minimax/minimax-m3", "meta/muse-spark-1.3-contributor", "mistralai/mistral-large", "mistralai/pixtral-large-2411",
         "cohere/command-r-plus", "microsoft/phi-4", "ai21/jamba-1-5-large", "amazon/nova-pro-v1", "liquid/lfm-40b",
-        "nousresearch/hermes-3-llama-3.1-405b", "01-ai/yi-large", "databricks/dbrx-instruct", "perplex/sonar-reasoning", "cognitivecomputations/dolphin-mixtral-8x7b",
+        "nousresearch/hermes-3-llama-3.1-405b", "01-ai/yi-large", "databricks/dbrx-instruct", "perplexity/sonar-reasoning", "cognitivecomputations/dolphin-mixtral-8x7b",
         "openchat/openchat-7b", "writer/palmyra-x-004", "allenai/olmo-7b-instruct", "togethercomputer/stripedhyena-nous-7b", "thinkingmachines/inkling-small:free"
     ]
 };

@@ -18,17 +18,18 @@ export async function listSettings() {
 }
 
 export async function updateSetting(id: string, data: { name: string; endpoint: string; models: string[] }) {
-    const userId = await requireUserId();
     try {
+        const userId = await requireUserId();
         const [row] = await db.update(providerSettings)
             .set({ name: data.name, endpoint: data.endpoint, models: data.models })
             .where(and(eq(providerSettings.id, id), eq(providerSettings.userId, userId)))
             .returning({ name: providerSettings.name });
 
+        if(!row)
+            return { ok: false as const, message: "Provider not found" };
+
         revalidatePath("/");
 
-        if (!row) return { ok: false as const, message: "Provider not found" };
-        revalidatePath("/");
         return { ok: true as const, message: `Saved "${row.name}"` };
     } catch (e) {
         console.error(e);
@@ -39,8 +40,9 @@ export async function updateSetting(id: string, data: { name: string; endpoint: 
 export async function createSetting(data: {
     name: string; provider: string; endpoint?: string; apiKey?: string; models?: string[]
 }) {
-    const userId = await requireUserId();
+
     try {
+        const userId = await requireUserId();
         const [row] = await db.insert(providerSettings).values({...data, userId}).returning();
         revalidatePath("/");
         return { ok: true as const, message: `Saved "${row.name}"`, row }
@@ -51,8 +53,8 @@ export async function createSetting(data: {
 }
 
 export async function deleteSetting(id: string) {
-    const userId = await requireUserId();
     try {
+        const userId = await requireUserId();
         await db.delete(providerSettings).where(and(eq(providerSettings.id, id), eq(providerSettings.userId, userId)));
         revalidatePath("/");
         return { ok: true as const, message: `Provider ${id} deleted` };

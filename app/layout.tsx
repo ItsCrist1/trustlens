@@ -49,9 +49,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
     const cookieStore = await cookies();
 
-    const orientation: Orientation =
-        (await cookieStore).get(ORIENTATION_COOKIE)?.value === "vertical" ? "vertical" : "horizontal";
-
+    const orientation: Orientation = cookieStore.get(ORIENTATION_COOKIE)?.value === "vertical" ? "vertical" : "horizontal";
     const width = clampSidebarWidth(Number(cookieStore.get(SIDEBAR_WIDTH_COOKIE)?.value ?? NaN));
 
     return (

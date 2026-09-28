@@ -117,7 +117,7 @@ export default function ProviderEntry(data: {
                                        alt={corpo?.alt ?? "Unknown"}
                                        className={corpo? corpo.className : "dark:invert"}
                                        width={20} height={20}/>
-                                <Label className="text-lg">{model.split('/')[1]}</Label>
+                                <Label className="text-lg">{model.split('/').pop()}</Label>
                             </div>
                         );
                     })}

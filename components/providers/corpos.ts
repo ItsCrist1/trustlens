@@ -17,7 +17,7 @@ export const corpos: Record<string, Corpo> = {
     tencent: { icon: "/icons/tencent.svg", alt: "Tencent logo" },
     nvidia: { icon: "/icons/nvidia.svg", alt: "NVIDIA logo" },
     xiaomi: { icon: "/icons/xiaomi.svg", alt: "Xiaomi logo", className: "dark:invert" },
-    perplex: { icon: "/icons/perplexity.svg", alt: "Perplex logo" },
+    perplexity: { icon: "/icons/perplexity.svg", alt: "Perplex logo" },
     minimax: { icon: "/icons/minimax.svg", alt: "Minimax logo" },
     microsoft: { icon: "/icons/microsoft.svg", alt: "Microsoft logo" },
     nousresearch: { icon: "/icons/nousresearch.svg", alt: "NousResearch logo", className: "dark:invert" },

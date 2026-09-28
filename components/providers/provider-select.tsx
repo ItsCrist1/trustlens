@@ -3,8 +3,8 @@
 import { ComponentType, useState } from "react";
 import Image from "next/image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { OpenRouterConfig } from "@/components/providers/openrouter-config";
-import {OpenAIConfig} from "@/components/providers/openai-config";
+import { OpenRouterConfig } from "@/components/providers/configs/openrouter-config";
+import OpenAIConfig from "@/components/providers/configs/openai-config";
 import {Button} from "@/components/ui/button";
 import {Plus} from "lucide-react";
 import {createSetting} from "@/app/actions/settings";
@@ -60,9 +60,16 @@ export function ProviderSelect() {
     const [saving, setSaving] = useState(false);
 
     async function handleCreate() {
-        setSaving(true)
+        const current = settings[provider] ?? emptySettings;
+        const cleaned = [...new Set(current.models.map((m) => m.trim()).filter(Boolean))];
+
+        setSettings((s) => ({ ...s, [provider]: { ...current, models: cleaned } }));
+        setSaving(true);
+
         try {
-            const res = await createSetting({ provider, ...(settings[provider] ?? emptySettings) });
+            const name = current.name.trim() || cleaned.map((m) => m.split('/').pop()).join(", ");
+            const res = await createSetting({ provider, ...current, name, models: cleaned });
+
             if(res.ok) {
                 toast.success(res.message);
                 setSettings((s) => ({ ...s, [provider]: { ...(s[provider] ?? emptySettings), name: "" } }))
@@ -75,6 +82,10 @@ export function ProviderSelect() {
 
     const current = providers.find((p) => p.value === provider)!;
     const Config = current.config;
+
+    const draft = settings[provider] ?? emptySettings;
+    const canCreate = !saving && draft.models.some((m) => m.trim());
+
 
     return (
         <div className="flex w-80 flex-col gap-4">
@@ -96,7 +107,7 @@ export function ProviderSelect() {
                 [provider]: { ...s[provider] ?? emptySettings, ...patch}
             }))}/>
 
-            <Button className="rounded-full cursor-pointer" onClick={handleCreate} disabled={saving || (settings[provider] ?? emptySettings).apiKey === ""}><Plus/>Create</Button>
+            <Button className="rounded-full cursor-pointer" onClick={handleCreate} disabled={!canCreate}><Plus/>Create</Button>
         </div>
     );
 }

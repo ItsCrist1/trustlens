@@ -4,12 +4,12 @@ import type { ConfigProps } from "@/components/providers/provider-select";
 import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
 
-export function OpenAIConfig({settings, onChange}: ConfigProps) {
+export default function OpenAIConfig({settings, onChange}: ConfigProps) {
     return (
         <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
                 <Label className="whitespace-nowrap">Name:</Label>
-                <Input type="text" className="rounded-lg" placeholder={settings.models.join(", ") || "Evaluated Models"} value={settings.name} onChange={(e) => onChange({ name: e.target.value })}/>
+                <Input type="text" className="rounded-lg" placeholder={settings.models.filter(Boolean).join(", ") || "Evaluated Models"} value={settings.name} onChange={(e) => onChange({ name: e.target.value })}/>
             </div>
 
             <div className="flex flex-row gap-3">
