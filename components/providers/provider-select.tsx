@@ -9,6 +9,7 @@ import {Button} from "@/components/ui/button";
 import {Plus} from "lucide-react";
 import {createSetting} from "@/app/actions/settings";
 import {toast} from "sonner";
+import {VercelAIGatewayConfig} from "@/components/providers/configs/vercel-ai-gateway-config";
 
 export type ProviderSettings = { name: string, endpoint: string; apiKey: string; models: string[] };
 
@@ -34,6 +35,14 @@ export const providers = [
         width: 20, height: 20,
         iconClass: "invert dark:invert-0", alt: "OpenAI Logo",
         config: OpenAIConfig
+    },
+
+    {
+        value: "vercel-ai-gateway", name: "Vercel-AI-Gateway",
+        icon: "/icons/vercel.svg",
+        width: 20, height: 20,
+        iconClass: "dark:invert", alt: "Vercel AI Gateway Logo",
+        config: VercelAIGatewayConfig
     }
 ] satisfies { value: string; name: string; icon: string; width: number, height: number, iconClass: string; alt: string; config: ComponentType<ConfigProps>}[];
 

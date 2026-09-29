@@ -22,7 +22,7 @@ export default function OpenAIConfig({settings, onChange}: ConfigProps) {
                 <Input type="password" className="rounded-lg" placeholder="sk-proj-abc123def..." value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
             </div>
 
-            <ModelList models={settings.models} templates={templates["universal"]} displayLabel={true} onChange={(models) => onChange({ models })}/>
+            <ModelList models={settings.models} templates={templates["openai"]} displayLabel={true} onChange={(models) => onChange({ models })}/>
         </div>
     );
 }

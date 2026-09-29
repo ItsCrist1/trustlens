@@ -1,9 +1,9 @@
 "use client";
 
 import { ChatMessage, ChatMsg } from "./chat-message";
-import { useState } from "react";
-import {Input} from "@/components/ui/input";
-import {Copy, Loader2, Send} from "lucide-react";
+import { useRef, useState } from "react";
+import {Textarea} from "@/components/ui/textarea";
+import {Copy, Send, Square} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {cn} from "cn";
 import {Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList} from "@/components/ui/combobox";
@@ -28,6 +28,8 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
     const selectedProvider = config ? getProvider(config.provider) : undefined;
     const selectedCorpo = model ? corpos[model.split("/")[0]] : undefined;
 
+    const stopRef = useRef<AbortController | null>(null);
+
     async function send() {
         const text = message.trim();
         if (!text || isLoading || !config) return;
@@ -37,11 +39,15 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
         setMessage("");
         setIsLoading(true);
 
+        const controller = new AbortController();
+        stopRef.current = controller;
+
         try {
             const res = await fetch("/api/llm", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ settingId: config?.id, model, messages: next }),
+                signal: controller.signal
             });
 
             if(!res.ok || !res.body) {
@@ -67,8 +73,10 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
                 setMessages([...next, { role: "assistant", content: text }]);
             }
         } catch {
-            setMessages([...next, { role: "assistant", content: "Couldn't reach the server" }]);
+            if(!controller.signal.aborted)
+                setMessages([...next, { role: "assistant", content: "Couldn't reach the server" }]);
         } finally {
+            stopRef.current = null;
             setIsLoading(false);
         }
     }
@@ -85,12 +93,17 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
                 </div>
             ))}
 
-            <form className="flex flex-row gap-4" onSubmit={(e) => { e.preventDefault(); send(); }}>
-                <Input className="rounded-lg" placeholder="Enter your message"
-                       value={message} onChange={(e) => setMessage(e.target.value)}/>
+            <form className="flex flex-row gap-4" onSubmit={(e) => { e.preventDefault(); isLoading ? stopRef.current?.abort() : send(); }}>
+                <Textarea className="rounded-lg min-h-0 max-h-48 resize-none" rows={1} placeholder="Enter your message"
+                       value={message} onChange={(e) => setMessage(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
+                                    e.preventDefault();
+                                    e.currentTarget.form?.requestSubmit();
+                                }}} />
 
-                <Button type="submit" disabled={isLoading || !message.trim()} className="cursor-pointer rounded-lg">
-                    {isLoading ? <Loader2 className="animate-spin"/> : <Send/>}
+                <Button type="submit" disabled={!message.trim() && !isLoading} className="cursor-pointer rounded-lg">
+                    {isLoading ? <Square/> : <Send/>}
                 </Button>
             </form>
 

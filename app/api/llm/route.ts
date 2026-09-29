@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { providerSettings } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import {createTextStreamResponse, streamText, toTextStream} from "ai";
+import {APICallError, createTextStreamResponse, RetryError, streamText, toTextStream} from "ai";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1";
 const OPENAI_URL = "https://api.openai.com/v1";
@@ -22,7 +22,13 @@ export async function POST(req: Request) {
     if(!setting)
         return Response.json({ error: "Setting not found" }, { status: 404 });
 
-    const baseURL = setting.provider === "openrouter" ? OPENROUTER_URL : setting.endpoint || OPENAI_URL;
+    const FIXED_URLS: Record<string, string> = {
+        "openrouter": "https://openrouter.ai/api/v1",
+        "vercel-ai-gateway": "https://ai-gateway.vercel.sh/v1",
+    };
+
+    const baseURL = FIXED_URLS[setting.provider] ?? (setting.endpoint || OPENAI_URL);
+
     const provider = createOpenAICompatible({ name: setting.provider, baseURL, apiKey: setting.apiKey });
 
     try {
@@ -52,7 +58,7 @@ export async function POST(req: Request) {
                 }
 
                 if(failure)
-                    controller.enqueue(`\n\n**Error:** ${failure instanceof Error ? failure.message : String(failure)}`);
+                    controller.enqueue(`\n\n**Error:** ${describe(failure)}`);
 
                 controller.close();
             }
@@ -62,4 +68,11 @@ export async function POST(req: Request) {
     } catch (e) {
         return Response.json({ error: e instanceof Error ? e.message : String(e) }, { status: 502 });
     }
+}
+
+function describe(error: unknown): string {
+    const e = RetryError.isInstance(error) ? error.lastError : error;
+    if (APICallError.isInstance(e))
+        return `${e.statusCode ?? ""} ${e.responseBody ?? e.message}`.trim();
+    return e instanceof Error ? e.message : String(e);
 }
