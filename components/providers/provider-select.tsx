@@ -10,6 +10,8 @@ import {Plus} from "lucide-react";
 import {createSetting} from "@/app/actions/settings";
 import {toast} from "sonner";
 import {VercelAIGatewayConfig} from "@/components/providers/configs/vercel-ai-gateway-config";
+import {Label} from "@/components/ui/label";
+import {Switch} from "@/components/ui/switch";
 
 export type ProviderSettings = { name: string, endpoint: string; apiKey: string; models: string[] };
 
@@ -95,6 +97,7 @@ export function ProviderSelect() {
     const draft = settings[provider] ?? emptySettings;
     const canCreate = !saving && draft.models.some((m) => m.trim());
 
+    const [isLLM, setIsLLM] = useState<boolean>(true);
 
     return (
         <div className="flex w-80 flex-col gap-4">
@@ -110,6 +113,12 @@ export function ProviderSelect() {
                     ))}
                 </SelectContent>
             </Select>
+
+            <div className="flex flex-row gap-4 justify-center">
+                <Label>LLM</Label>
+                <Switch className="cursor-pointer" checked={!isLLM} onCheckedChange={(checked) => setIsLLM(!checked)}/>
+                <Label>SYS1</Label>
+            </div>
 
             <Config settings={settings[provider] ?? emptySettings} onChange={(patch) => setSettings((s) => ({
                 ...s,
