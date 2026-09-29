@@ -39,7 +39,7 @@ export default function ProviderEntry(data: {
     const [saving, setSaving] = useState(false);
 
     return (
-        <div className="flex flex-col gap-2 bg-accent rounded-lg p-4 w-full">
+        <div className="flex flex-col gap-2 bg-accent rounded-lg p-4">
             <div className="flex flex-row gap-2">
                 {provider && <Image src={provider.icon} alt={provider.alt} width={provider.width} height={provider.height} className={provider.iconClass}/> }
                 <ProviderText text={data.name} onChange={setName} isReadOnly={isReadOnly}/>
@@ -93,8 +93,8 @@ export default function ProviderEntry(data: {
                     if (res.ok) {
                         toast.success(res.message);
                         setReadonly(true);
-                    } else toast.error(res.message);   // stay in edit mode so they can retry
-                }} className="rounded-lg">{isReadOnly ? <Pencil/> : <Check/>}</Button>
+                    } else toast.error(res.message);
+                }} className="rounded-lg cursor-pointer">{isReadOnly ? <Pencil/> : <Check/>}</Button>
             </div>
 
             { data.endpoint &&

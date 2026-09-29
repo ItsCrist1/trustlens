@@ -3,6 +3,7 @@ import ProviderEntryList from "@/components/providers/providers-entry-list";
 import ChatInterface from "@/components/llm-interface/chat-interface";
 import {listSettings} from "@/app/actions/settings";
 import {auth} from "@/auth";
+import EvaluationEntry from "@/components/evaluation/evaluation-entry";
 
 export default async function Home() {
     const session = await auth();
@@ -10,10 +11,11 @@ export default async function Home() {
     const configs = list.map(({ id, name, provider, models }) => ({ id, name, provider, models }));
 
     return (
-        <div className="flex gap-10 p-4">
+        <div className="flex flex-col gap-10 p-4">
             <ProviderSelect/>
             <ProviderEntryList list={list}/>
             <ChatInterface configs={configs}/>
+            <EvaluationEntry configs={configs}/>
         </div>
     );
 }
