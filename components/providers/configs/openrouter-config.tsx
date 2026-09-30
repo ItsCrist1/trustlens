@@ -41,7 +41,7 @@ export function OpenRouterConfig({settings, onChange}: ConfigProps) {
                 </Button>
             </div>
 
-            <ModelList models={settings.models} templates={templates["openrouter"]} displayLabel={true} onChange={(models) => onChange({ models })}/>
+            <ModelList models={settings.models} templates={templates["openrouter"]} displayLabel={true} onChange={(models) => onChange({ models })} isEndpoint={false}/>
         </div>
     );
 }

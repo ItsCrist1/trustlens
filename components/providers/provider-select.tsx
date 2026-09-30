@@ -24,19 +24,19 @@ const emptySettings: ProviderSettings = { name: "", endpoint: "", apiKey: "", mo
 
 export const providers = [
     {
-        value: "openrouter", name: "OpenRouter",
-        icon: "/icons/openrouter.svg",
-        width: 20, height: 20,
-        iconClass: "", alt: "OpenRouter logo",
-        config: OpenRouterConfig
-    },
-
-    {
         value: "openai", name: "OpenAI-Compatible",
         icon: "/icons/openai.svg",
         width: 20, height: 20,
         iconClass: "invert dark:invert-0", alt: "OpenAI Logo",
         config: OpenAIConfig
+    },
+
+    {
+        value: "openrouter", name: "OpenRouter",
+        icon: "/icons/openrouter.svg",
+        width: 20, height: 20,
+        iconClass: "", alt: "OpenRouter logo",
+        config: OpenRouterConfig
     },
 
     {
@@ -65,7 +65,7 @@ function ProviderLabel({ value }: { value: string }) {
 }
 
 export function ProviderSelect() {
-    const [provider, setProvider] = useState("openrouter");
+    const [provider, setProvider] = useState("openai");
     const [settings, setSettings] = useState<Record<string, ProviderSettings>>({});
 
     const [saving, setSaving] = useState(false);

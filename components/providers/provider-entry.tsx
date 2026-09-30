@@ -11,7 +11,7 @@ import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
 import { toast } from "sonner";
 import {deleteSetting, updateSetting} from "@/app/actions/settings";
-import {corpos} from "@/components/providers/corpos";
+import {pics_corpos} from "@/components/providers/pics";
 
 function ProviderText({ text, onChange, isReadOnly } : { text: string, onChange: (v: string) => void; isReadOnly: boolean }) {
     return (
@@ -109,11 +109,11 @@ export default function ProviderEntry(data: {
                     <Label className="md:text-base">Model{models.length === 1 ? '' : 's'}:</Label>
 
                     { isReadOnly && models.map((model) => {
-                        const corpo = corpos[model.split('/')[0]];
+                        const corpo = pics_corpos[model.split('/')[0]];
 
                         return (
                             <div key={model} className="flex flex-row gap-2">
-                                <Image src={corpo?.icon ?? "/icons/unknown.svg"}
+                                <Image src={corpo?.icon ?? "/icons/llm.svg"}
                                        alt={corpo?.alt ?? "Unknown"}
                                        className={corpo? corpo.className : "dark:invert"}
                                        width={20} height={20}/>
@@ -124,7 +124,7 @@ export default function ProviderEntry(data: {
 
                     { !isReadOnly &&
                         <div className="flex flex-col gap-2">
-                            <ModelList models={models} templates={templates[data.provider] ?? []} displayLabel={false} onChange={setModels}/>
+                            <ModelList models={models} templates={templates[data.provider] ?? []} displayLabel={false} onChange={setModels} isEndpoint={false}/>
                         </div>
                     }
                 </div>

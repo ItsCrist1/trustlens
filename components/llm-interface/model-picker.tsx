@@ -2,7 +2,7 @@ import {Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList} fr
 import {InputGroupAddon} from "@/components/ui/input-group";
 import Image from "next/image";
 import {getProvider} from "@/components/providers/provider-select";
-import {corpos} from "@/components/providers/corpos";
+import {pics_corpos} from "@/components/providers/pics";
 import type {ChatConfig} from "@/components/llm-interface/chat-config";
 
 type ModelConfig = {
@@ -15,7 +15,7 @@ type ModelConfig = {
 
 export default function ModelPicker({ configs, config, setConfigId, model, setModel }: ModelConfig) {
     const selectedProvider = config ? getProvider(config.provider) : undefined;
-    const selectedCorpo = model ? corpos[model.split("/")[0]] : undefined;
+    const selectedCorpo = model ? pics_corpos[model.split("/")[0]] : undefined;
 
     return (
         <div className="flex flex-row gap-4">
@@ -61,7 +61,7 @@ export default function ModelPicker({ configs, config, setConfigId, model, setMo
                 <ComboboxInput className="rounded-lg w-56" placeholder="Pick a model">
                     {model && (
                         <InputGroupAddon align="inline-start">
-                            <Image src={selectedCorpo?.icon ?? "/icons/unknown.svg"} alt={selectedCorpo?.alt ?? "Unknown"}
+                            <Image src={selectedCorpo?.icon ?? "/icons/llm.svg"} alt={selectedCorpo?.alt ?? "Unknown"}
                                    width={16} height={16} className={selectedCorpo ? selectedCorpo.className : "dark:invert"}/>
                         </InputGroupAddon>
                     )}
@@ -70,10 +70,10 @@ export default function ModelPicker({ configs, config, setConfigId, model, setMo
                 <ComboboxContent>
                     <ComboboxList>
                         {(m: string) => {
-                            const corpo = corpos[m.split('/')[0]];
+                            const corpo = pics_corpos[m.split('/')[0]];
                             return (
                                 <ComboboxItem key={m} value={m}>
-                                    <Image src={corpo?.icon ?? "/icons/unknown.svg"} alt={corpo?.alt ?? "Unknown"}
+                                    <Image src={corpo?.icon ?? "/icons/llm.svg"} alt={corpo?.alt ?? "Unknown"}
                                            width={16} height={16} className={corpo ? corpo.className : "dark:invert"}/>
                                     {m}
                                 </ComboboxItem>
