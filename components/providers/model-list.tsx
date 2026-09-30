@@ -7,16 +7,10 @@ import {Button} from "@/components/ui/button";
 import {Minus, Plus} from "lucide-react";
 import {Label} from "@/components/ui/label";
 import Image from "next/image";
-import {Pic, pics_corpos, pics_endpoints, pics_models} from "@/components/providers/pics";
+import {getPic, Pic, pics_corpos, pics_endpoints, pics_models} from "@/components/providers/pics";
 import {cn} from "cn";
 import {Autocomplete} from "@base-ui/react";
 import {InputGroupAddon} from "@/components/ui/input-group";
-
-function getPic(model: string, isEndpoint: boolean): Pic | undefined {
-    return isEndpoint
-        ? pics_models[model.toLowerCase().split(/[-.\d]/)[0]]
-        : pics_corpos[model.split("/")[0]];
-}
 
 function ModelRow({value, onChange, onRemove, isAlone, templates, isEndpoint}: { value: string, onChange: (v: string) => void; onRemove: () => void, isAlone: boolean, templates: string[], isEndpoint: boolean}) {
     const source = isEndpoint ? pics_endpoints : pics_corpos;

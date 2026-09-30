@@ -90,3 +90,9 @@ export const pics_endpoints: Record<string, Pic> = {
     "openrouter.ai": { icon: "/icons/openrouter.svg", alt: "OpenRouter logo", className: "dark:invert" },
     "ai-gateway.vercel.sh": { icon: "/icons/vercel.svg", alt: "Vercel logo", className: "dark:invert" },
 };
+
+export function getPic(model: string, isEndpoint: boolean): Pic | undefined {
+    return isEndpoint
+        ? pics_models[model.toLowerCase().split(/[-.\d]/)[0]]
+        : pics_corpos[model.split("/")[0]];
+}

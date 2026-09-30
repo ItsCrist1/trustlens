@@ -11,7 +11,9 @@ import ModelList from "@/components/providers/model-list";
 import {templates} from "@/components/providers/provider-templates";
 import { toast } from "sonner";
 import {deleteSetting, updateSetting} from "@/app/actions/settings";
-import {pics_corpos} from "@/components/providers/pics";
+import {getPic} from "@/components/providers/pics";
+import {useEndpointModels} from "@/components/providers/use-endpoint-models";
+import EndpointInput from "@/components/providers/endpoint-input";
 
 function ProviderText({ text, onChange, isReadOnly } : { text: string, onChange: (v: string) => void; isReadOnly: boolean }) {
     return (
@@ -37,6 +39,7 @@ export default function ProviderEntry(data: {
     const [name, setName] = useState(data.name);
     const [endpoint, setEndpoint] = useState(data.endpoint ?? "");
     const [saving, setSaving] = useState(false);
+    const liveModels = useEndpointModels(data.provider === "openai" ? endpoint : "")
 
     return (
         <div className="flex flex-col gap-2 bg-accent rounded-lg p-4">
@@ -100,7 +103,9 @@ export default function ProviderEntry(data: {
             { data.endpoint &&
                 <div className="flex flex-row gap-2">
                     <Label className="md:text-base">Endpoint: </Label>
-                    <ProviderText text={data.endpoint} onChange={setEndpoint} isReadOnly={isReadOnly}/>
+                    {isReadOnly
+                        ? <ProviderText text={endpoint} onChange={setEndpoint} isReadOnly/>
+                        : <EndpointInput value={endpoint} onChange={setEndpoint}/>}
                 </div>
             }
 
@@ -109,7 +114,7 @@ export default function ProviderEntry(data: {
                     <Label className="md:text-base">Model{models.length === 1 ? '' : 's'}:</Label>
 
                     { isReadOnly && models.map((model) => {
-                        const corpo = pics_corpos[model.split('/')[0]];
+                        const corpo = getPic(model, data.provider === "openai");
 
                         return (
                             <div key={model} className="flex flex-row gap-2">
@@ -124,7 +129,7 @@ export default function ProviderEntry(data: {
 
                     { !isReadOnly &&
                         <div className="flex flex-col gap-2">
-                            <ModelList models={models} templates={templates[data.provider] ?? []} displayLabel={false} onChange={setModels} isEndpoint={false}/>
+                            <ModelList models={models} templates={liveModels ?? templates[data.provider] ?? []} displayLabel={false} onChange={setModels} isEndpoint={data.provider === "openai"}/>
                         </div>
                     }
                 </div>
