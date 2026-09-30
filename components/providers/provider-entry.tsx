@@ -41,6 +41,8 @@ export default function ProviderEntry(data: {
     const [saving, setSaving] = useState(false);
     const liveModels = useEndpointModels(data.provider === "openai" ? endpoint : "")
 
+    const [apiKey, setApiKey] = useState("");
+
     return (
         <div className="flex flex-col gap-2 bg-accent rounded-lg p-4">
             <div className="flex flex-row gap-2">
@@ -79,7 +81,7 @@ export default function ProviderEntry(data: {
                     const original = { name: data.name, endpoint: data.endpoint ?? "", models: data.models ?? [] };
                     const current  = { name: name.trim(), endpoint: endpoint.trim(), models: cleaned };
 
-                    if (JSON.stringify(original) === JSON.stringify(current)) {
+                    if (JSON.stringify(original) === JSON.stringify(current) && !apiKey.trim()) {
                         setReadonly(true);
                         return;
                     }
@@ -90,12 +92,13 @@ export default function ProviderEntry(data: {
                     }
 
                     setSaving(true);
-                    const res = await updateSetting(data.id, { name: name.trim(), endpoint: endpoint.trim(), models: cleaned });
+                    const res = await updateSetting(data.id, { ...current, apiKey: apiKey.trim() || undefined });
                     setSaving(false);
 
                     if (res.ok) {
                         toast.success(res.message);
                         setReadonly(true);
+                        setApiKey("");
                     } else toast.error(res.message);
                 }} className="rounded-lg cursor-pointer">{isReadOnly ? <Pencil/> : <Check/>}</Button>
             </div>
@@ -106,6 +109,13 @@ export default function ProviderEntry(data: {
                     {isReadOnly
                         ? <ProviderText text={endpoint} onChange={setEndpoint} isReadOnly/>
                         : <EndpointInput value={endpoint} onChange={setEndpoint}/>}
+                </div>
+            }
+
+            { data.endpoint && !isReadOnly &&
+                <div className="flex flex-row gap-2">
+                    <Label className="md:text-base whitespace-nowrap">API Key:</Label>
+                    <Input type="password" onChange={(e) => setApiKey(e.target.value)} className="rounded-lg" placeholder="•••••••• (leave empty to keep)" autoComplete="new-password"/>
                 </div>
             }
 

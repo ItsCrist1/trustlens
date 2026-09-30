@@ -17,11 +17,11 @@ export async function listSettings() {
     return db.select().from(providerSettings).where(eq(providerSettings.userId, userId)).orderBy(desc(providerSettings.createdAt));
 }
 
-export async function updateSetting(id: string, data: { name: string; endpoint: string; models: string[] }) {
+export async function updateSetting(id: string, data: { name: string; endpoint: string; models: string[], apiKey?: string }) {
     try {
         const userId = await requireUserId();
         const [row] = await db.update(providerSettings)
-            .set({ name: data.name, endpoint: data.endpoint, models: data.models })
+            .set({ name: data.name, endpoint: data.endpoint, models: data.models, ...(data.apiKey ? { apiKey: data.apiKey } : {}) })
             .where(and(eq(providerSettings.id, id), eq(providerSettings.userId, userId)))
             .returning({ name: providerSettings.name });
 
