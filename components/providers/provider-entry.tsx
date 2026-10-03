@@ -19,7 +19,7 @@ function ProviderText({ text, onChange, isReadOnly } : { text: string, onChange:
     return (
         <Input readOnly={isReadOnly}
                onChange={(e) => onChange(e.target.value)}
-               defaultValue={text}
+               value={text}
                autoComplete="off"
                data-protonpass-ignore="true"
                data-1p-ignore
@@ -30,18 +30,18 @@ function ProviderText({ text, onChange, isReadOnly } : { text: string, onChange:
 }
 
 export default function ProviderEntry(data: {
-    id: string, name: string; provider: string; endpoint?: string; models?: string[]
+    id: string, name: string; provider: string; endpoint?: string; models?: string[], kind: string
 }) {
     const provider = getProvider(data.provider);
     const [isReadOnly, setReadonly] = useState(true);
     const [models, setModels] = useState(data.models ?? []);
+    const [apiKey, setApiKey] = useState("");
 
     const [name, setName] = useState(data.name);
     const [endpoint, setEndpoint] = useState(data.endpoint ?? "");
     const [saving, setSaving] = useState(false);
-    const liveModels = useEndpointModels(data.provider === "openai" ? endpoint : "")
-
-    const [apiKey, setApiKey] = useState("");
+    const [hasDeleted, setHasDeleted] = useState(false);
+    const liveModels = useEndpointModels(data.provider === "openai" ? endpoint : "", apiKey, data.id)
 
     return (
         <div className="flex flex-col gap-2 bg-accent rounded-lg p-4">
@@ -49,7 +49,8 @@ export default function ProviderEntry(data: {
                 {provider && <Image src={provider.icon} alt={provider.alt} width={provider.width} height={provider.height} className={provider.iconClass}/> }
                 <ProviderText text={data.name} onChange={setName} isReadOnly={isReadOnly}/>
 
-                <Button variant="ghost" disabled={!isReadOnly} onClick={async () => {
+                <Button variant="ghost" disabled={!isReadOnly || hasDeleted} onClick={async () => {
+                    setHasDeleted(true);
                     const res = await deleteSetting(data.id);
                     if(res.ok) toast.success(res.message);
                     else toast.error(res.message);
@@ -72,14 +73,14 @@ export default function ProviderEntry(data: {
                     <Copy/>
                 </Button>
 
-                <Button variant="ghost" disabled={saving} onClick={async () => {
+                <Button variant="ghost" disabled={saving || hasDeleted} onClick={async () => {
                     if(isReadOnly) { setReadonly(false); return; }
 
                     const cleaned = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
                     const removed = models.length - cleaned.length;
 
-                    const original = { name: data.name, endpoint: data.endpoint ?? "", models: data.models ?? [] };
-                    const current  = { name: name.trim(), endpoint: endpoint.trim(), models: cleaned };
+                    const original = { name: data.name, endpoint: data.endpoint ?? "", models: data.models ?? [], kind: data.kind };
+                    const current  = { name: name.trim(), endpoint: endpoint.trim(), models: cleaned, kind: data.kind };
 
                     if (JSON.stringify(original) === JSON.stringify(current) && !apiKey.trim()) {
                         setReadonly(true);
@@ -108,11 +109,11 @@ export default function ProviderEntry(data: {
                     <Label className="md:text-base">Endpoint: </Label>
                     {isReadOnly
                         ? <ProviderText text={endpoint} onChange={setEndpoint} isReadOnly/>
-                        : <EndpointInput value={endpoint} onChange={setEndpoint}/>}
+                        : <EndpointInput value={endpoint} onChange={setEndpoint} isLLM={data.kind === "llm"}/>}
                 </div>
             }
 
-            { data.endpoint && !isReadOnly &&
+            { !isReadOnly &&
                 <div className="flex flex-row gap-2">
                     <Label className="md:text-base whitespace-nowrap">API Key:</Label>
                     <Input type="password" onChange={(e) => setApiKey(e.target.value)} className="rounded-lg" placeholder="•••••••• (leave empty to keep)" autoComplete="new-password"/>

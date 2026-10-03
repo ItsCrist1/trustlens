@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, primaryKey, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, integer, primaryKey } from "drizzle-orm/pg-core"
 import type { AdapterAccountType } from "next-auth/adapters"
 
 export const users = pgTable("user", {
@@ -35,13 +35,6 @@ export const verificationTokens = pgTable("verificationToken", {
     expires: timestamp("expires", { mode: "date" }).notNull()
 }, (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })])
 
-export const userPreferences = pgTable("user_preferences", {
-    userId: text("userId").primaryKey().references(() => users.id, { onDelete: "cascade" }),
-    selectedProvider: text("selectedProvider").default("openrouter"),
-    providerSettings: jsonb("providerSettings").$type<Record<string, { endpoint: string; model: string }>>().default({}),
-    updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow()
-})
-
 export const providerSettings = pgTable("provider_settings", {
     id: text("id").primaryKey().$default(() => crypto.randomUUID()),
     userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
@@ -50,5 +43,6 @@ export const providerSettings = pgTable("provider_settings", {
     provider: text("provider").notNull(),
     endpoint: text("endpoint").notNull().default(""),
     models: text("models").array().notNull().default([]),
+    kind: text("kind").notNull().default(""),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow()
 })

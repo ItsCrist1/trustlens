@@ -395,11 +395,22 @@ const vercel_ai_gateway: string[] = [
     "poolside/laguna-s-2.1-free",
 ];
 
+const sys1_models = [
+    "typesafe:jev-1.13.0",
+    "typesafe:jev-mini",
+    "typesafe:jev-fast",
+
+    "typesafe/systemone-adapter-v1",
+    "openrouter/typesafe:jev-1.13",
+    "cloudflare/typesafe-jev-gateway"
+];
+
 export const templates: Record<string, string[]> = {
     openrouter: [...new Set([...openrouter_free, ...openrouter_nonfree])],
     openai: openai_endpoint_fallback,
+    openai_sys1: sys1_models,
     "vercel-ai-gateway": vercel_ai_gateway,
-    endpoints: [
+    endpoints_llm: [
         "https://api.openai.com/v1",
         "https://api.anthropic.com/v1",
         "https://generativelanguage.googleapis.com/v1beta/openai",
@@ -420,5 +431,13 @@ export const templates: Record<string, string[]> = {
         "https://inference.poolside.ai/v1",
         "https://openrouter.ai/api/v1",
         "https://ai-gateway.vercel.sh/v1",
+    ],
+
+    endpoints_sys1: [
+        "https://api.typesafe.ai/v1/systemone",
+        "https://openrouter.ai/api/v1/chat/completions",
+        "https://gateway.ai.cloudflare.com/v1/account/gateway/typesafe",
+        "https://gateway.vercel.ai/v1/typesafe",
+        "https://api.truefoundry.com/v1/typesafe/systemone"
     ]
 };

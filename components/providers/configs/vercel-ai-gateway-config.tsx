@@ -17,7 +17,7 @@ export function VercelAIGatewayConfig({settings, onChange}: ConfigProps) {
                 <Input type="password" className="rounded-lg" placeholder="Vercel AI Gateway API Key" value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
             </div>
 
-            <ModelList models={settings.models} templates={templates["vercel-ai-gateway"]} displayLabel={true} onChange={(models) => onChange({ models })}/>
+            <ModelList models={settings.models} templates={templates["vercel-ai-gateway"]} displayLabel={true} onChange={(models) => onChange({ models })} isEndpoint={false}/>
         </div>
     );
 }

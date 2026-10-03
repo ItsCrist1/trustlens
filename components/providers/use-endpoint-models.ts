@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 
-export function useEndpointModels(rawEndpoint: string, apiKey = ""): string[] | null {
+export function useEndpointModels(rawEndpoint: string, apiKey = "", settingId = ""): string[] | null {
     const [fetched, setFetched] = useState<{ endpoint: string; models: string[] | null } | null>(null);
     const endpoint = rawEndpoint.trim();
 
@@ -12,7 +12,7 @@ export function useEndpointModels(rawEndpoint: string, apiKey = ""): string[] | 
                 const res = await fetch("/api/models", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ endpoint, apiKey }),
+                    body: JSON.stringify({ endpoint, apiKey, settingId }),
                     signal: controller.signal,
                 });
                 const { models } = await res.json();
@@ -22,7 +22,7 @@ export function useEndpointModels(rawEndpoint: string, apiKey = ""): string[] | 
             }
         }, 500);
         return () => { clearTimeout(timer); controller.abort(); };
-    }, [endpoint, apiKey]);
+    }, [endpoint, apiKey, settingId]);
 
     return fetched?.endpoint === endpoint ? fetched.models : null;
 }

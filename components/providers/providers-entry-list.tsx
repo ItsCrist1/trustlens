@@ -12,7 +12,8 @@ export default function ProvidersEntryList({ list }: { list: Setting[]}) {
                                name={item.name}
                                provider={item.provider}
                                endpoint={item.endpoint}
-                               models={item.models}/>
+                               models={item.models}
+                               kind={item.kind}/>
             ))}
         </div>
     );

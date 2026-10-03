@@ -1,7 +1,7 @@
 import {useState} from "react";
 
 export type ChatConfig = {
-    id: string; name: string; provider: string; models: string[]
+    id: string; name: string; provider: string; models: string[], kind: string;
 };
 
 export default function useModelSelection(configs: ChatConfig[]) {

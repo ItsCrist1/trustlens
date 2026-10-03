@@ -18,9 +18,10 @@ export type ProviderSettings = { name: string, endpoint: string; apiKey: string;
 export type ConfigProps = {
     settings: ProviderSettings;
     onChange: (patch: Partial<ProviderSettings>) => void;
+    isLLM: boolean;
 };
 
-const emptySettings: ProviderSettings = { name: "", endpoint: "", apiKey: "", models: [""] };
+const emptySettings: ProviderSettings = { name: "", endpoint: "", apiKey: "", models: [""]};
 
 export const providers = [
     {
@@ -69,6 +70,7 @@ export function ProviderSelect() {
     const [settings, setSettings] = useState<Record<string, ProviderSettings>>({});
 
     const [saving, setSaving] = useState(false);
+    const [isLLM, setIsLLM] = useState<boolean>(true);
 
     async function handleCreate() {
         const current = settings[provider] ?? emptySettings;
@@ -79,7 +81,7 @@ export function ProviderSelect() {
 
         try {
             const name = current.name.trim() || cleaned.map((m) => m.split('/').pop()).join(", ");
-            const res = await createSetting({ provider, ...current, name, models: cleaned });
+            const res = await createSetting({ provider, ...current, name, models: cleaned, kind: isLLM ? "llm" : "sys1" });
 
             if(res.ok) {
                 toast.success(res.message);
@@ -96,8 +98,6 @@ export function ProviderSelect() {
 
     const draft = settings[provider] ?? emptySettings;
     const canCreate = !saving && draft.models.some((m) => m.trim());
-
-    const [isLLM, setIsLLM] = useState<boolean>(true);
 
     return (
         <div className="flex w-80 flex-col gap-4">
@@ -123,7 +123,7 @@ export function ProviderSelect() {
             <Config settings={settings[provider] ?? emptySettings} onChange={(patch) => setSettings((s) => ({
                 ...s,
                 [provider]: { ...s[provider] ?? emptySettings, ...patch}
-            }))}/>
+            }))} isLLM={isLLM}/>
 
             <Button className="rounded-full cursor-pointer" onClick={handleCreate} disabled={!canCreate}><Plus/>Create</Button>
         </div>

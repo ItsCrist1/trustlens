@@ -8,7 +8,7 @@ import EvaluationEntry from "@/components/evaluation/evaluation-entry";
 export default async function Home() {
     const session = await auth();
     const list = session?.user ? await listSettings() : [];
-    const configs = list.map(({ id, name, provider, models }) => ({ id, name, provider, models }));
+    const configs = list.map(({ id, name, provider, models, kind }) => ({ id, name, provider, models, kind }));
 
     return (
         <div className="flex flex-col gap-10 p-4">

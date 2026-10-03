@@ -6,7 +6,7 @@ import {templates} from "@/components/providers/provider-templates";
 import {useEndpointModels} from "@/components/providers/use-endpoint-models";
 import EndpointInput from "@/components/providers/endpoint-input";
 
-export default function OpenAIConfig({settings, onChange}: ConfigProps) {
+export default function OpenAIConfig({settings, onChange, isLLM}: ConfigProps) {
     const liveModels = useEndpointModels(settings.endpoint, settings.apiKey);
 
     return (
@@ -18,7 +18,7 @@ export default function OpenAIConfig({settings, onChange}: ConfigProps) {
 
             <div className="flex flex-row gap-3">
                 <Label>Endpoint:</Label>
-                <EndpointInput value={settings.endpoint} onChange={(v) => onChange({ endpoint: v })}/>
+                <EndpointInput value={settings.endpoint} onChange={(v) => onChange({ endpoint: v })} isLLM={isLLM}/>
             </div>
 
             <div className="flex flex-row gap-3">
@@ -26,7 +26,7 @@ export default function OpenAIConfig({settings, onChange}: ConfigProps) {
                 <Input type="password" className="rounded-lg" placeholder="sk-proj-abc123def..." value={settings.apiKey} onChange={(e) => onChange({ apiKey: e.target.value })}/>
             </div>
 
-            <ModelList models={settings.models} templates={liveModels ?? templates["openai"]} displayLabel={true} onChange={(models) => onChange({ models })} isEndpoint={true}/>
+            <ModelList models={settings.models} templates={liveModels ?? templates[isLLM ? "openai" : "openai_sys1"]} displayLabel={true} onChange={(models) => onChange({ models })} isEndpoint={true}/>
         </div>
     );
 }

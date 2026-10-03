@@ -6,15 +6,15 @@ import {templates} from "@/components/providers/provider-templates";
 import Image from "next/image";
 import {cn} from "cn";
 
-export default function EndpointInput({value, onChange}: { value: string, onChange: (v: string) => void }) {
+export default function EndpointInput({value, onChange, isLLM}: { value: string, onChange: (v: string) => void, isLLM: boolean }) {
     const host = (() => { try { return new URL(value.trim()).hostname; } catch { return ""; } })();
     const pic = pics_endpoints[host];
 
     return (
         <Autocomplete.Root value={value}
                            onValueChange={onChange}
-                           items={templates["endpoints"]}>
-            <ComboboxInput className="flex-1 rounded-lg" placeholder="https://api.openai.com/v1">
+                           items={isLLM ? templates["endpoints_llm"] : templates["endpoints_sys1"]}>
+            <ComboboxInput className="flex-1 rounded-lg" placeholder={isLLM ? "https://api.openai.com/v1" : "https://api.typesafe.ai/v1/systemone"}>
                 {value && (
                     <InputGroupAddon align="inline-start">
                         <Image src={pic?.icon ?? "/icons/llm.svg"}
@@ -28,7 +28,13 @@ export default function EndpointInput({value, onChange}: { value: string, onChan
             <ComboboxContent className="rounded-lg">
                 <ComboboxList>
                     {(template: string) => {
-                        const endpoint = pics_endpoints[new URL(template).hostname];
+                        let endpoint;
+
+                        try {
+                            endpoint = pics_endpoints[new URL(template).hostname];
+                        } catch {
+                            endpoint = undefined;
+                        }
 
                         return (
                           <Autocomplete.Item key={template} value={template}
