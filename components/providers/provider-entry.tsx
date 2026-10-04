@@ -47,7 +47,7 @@ export default function ProviderEntry(data: {
         <div className="flex flex-col gap-2 bg-accent rounded-lg p-4">
             <div className="flex flex-row gap-2">
                 {provider && <Image src={provider.icon} alt={provider.alt} width={provider.width} height={provider.height} className={provider.iconClass}/> }
-                <ProviderText text={data.name} onChange={setName} isReadOnly={isReadOnly}/>
+                <ProviderText text={name} onChange={setName} isReadOnly={isReadOnly}/>
 
                 <Button variant="ghost" disabled={!isReadOnly || hasDeleted} onClick={async () => {
                     setHasDeleted(true);

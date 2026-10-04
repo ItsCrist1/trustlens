@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {clampSidebarWidth, SIDEBAR_DEFAULT, SIDEBAR_WIDTH_COOKIE} from "@/components/nav/orientation";
 
-export function ResizableAside({ initialWidth, children }: { initialWidth: number; children: React.ReactNode }) {
+export function ResizableAside({ initialWidth, cookieName, children }: { initialWidth: number; cookieName?: string, children: React.ReactNode }) {
     const [width, setWidth] = useState(initialWidth);
 
     function startDrag(e: React.PointerEvent) {
@@ -29,12 +29,14 @@ export function ResizableAside({ initialWidth, children }: { initialWidth: numbe
     }
 
     return (
-        <aside style={{ width }} className="@container sticky top-0 flex h-screen shrink-0 flex-col gap-6 border-r bg-sidebar p-3">
+        <aside style={{ width }} className="@container sticky top-0 flex shrink-0 flex-col gap-6 border-r bg-sidebar p-3">
             {children}
             <div onPointerDown={startDrag}
                  onDoubleClick={() => {
                      setWidth(SIDEBAR_DEFAULT);
-                     document.cookie = `${SIDEBAR_WIDTH_COOKIE}=${SIDEBAR_DEFAULT}; path=/; max-age=31536000`;
+
+                     if(cookieName)
+                        document.cookie = `${cookieName}=${SIDEBAR_DEFAULT}; path=/; max-age=31536000`;
                  }}
                  className="absolute inset-y-0 -right-1 w-2 cursor-col-resize hover:bg-border/60 transition-colors"/>
         </aside>

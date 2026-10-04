@@ -11,11 +11,11 @@ export default async function Home() {
     const configs = list.map(({ id, name, provider, models, kind }) => ({ id, name, provider, models, kind }));
 
     return (
-        <div className="flex flex-col gap-10 p-4">
+        <div className="flex flex-row gap-10 p-4">
             <ProviderSelect/>
             <ProviderEntryList list={list}/>
             <ChatInterface configs={configs}/>
-            <EvaluationEntry configs={configs}/>
+            { /* <EvaluationEntry configs={configs}/> */ }
         </div>
     );
 }

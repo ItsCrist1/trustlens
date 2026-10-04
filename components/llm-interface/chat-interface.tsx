@@ -3,11 +3,12 @@
 import { ChatMessage, ChatMsg } from "./chat-message";
 import { useRef, useState } from "react";
 import {Textarea} from "@/components/ui/textarea";
-import {Copy, Send, Square} from "lucide-react";
+import {Copy, PanelLeft, Send, Square} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {cn} from "cn";
 import ModelPicker from "@/components/llm-interface/model-picker";
 import useModelSelection, { type ChatConfig } from "@/components/llm-interface/chat-config";
+import LLMSidebar from "@/components/llm-interface/chat-interface-sidebar";
 
 export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
     const [messages, setMessages] = useState<ChatMsg[]>([]);
@@ -15,12 +16,17 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
     const [message, setMessage] = useState("");
 
     const selection = useModelSelection(configs);
+    const canSend = message.trim() !== "" && selection.config !== null && selection.model !== null;
 
     const stopRef = useRef<AbortController | null>(null);
 
+    const [showSidebar, setShowSiderbar] = useState(false);
+
     async function send() {
         const text = message.trim();
-        if (!text || isLoading || !selection.config) return;
+
+        if (!canSend || isLoading)
+            return;
 
         const next: ChatMsg[] = [...messages, { role: "user", content: text }];
         setMessages(next);
@@ -70,32 +76,42 @@ export default function ChatInterface({ configs }: { configs: ChatConfig[] }) {
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            {messages.map((m, i) => (
-                <div key={i} className="flex flex-col gap-1">
-                    <ChatMessage {...m}/>
-                    <Button variant="ghost" size="icon-sm" className={cn(m.role === "user" ? "self-end" : "self-start", "cursor-pointer")}
-                            onClick={() => navigator.clipboard.writeText(m.content)}>
-                        <Copy/>
+        <>
+            { showSidebar && <LLMSidebar/> }
+
+            <div className="flex flex-col gap-4">
+                <header className="sticky top-0 flex items-center h-14 justify-between gap-4 border-b backdrop-blur">
+                    <Button className="cursor-pointer" variant="ghost" onClick={() => setShowSiderbar(!showSidebar)}>
+                        <PanelLeft/>
                     </Button>
-                </div>
-            ))}
+                </header>
 
-            <form className="flex flex-row gap-4" onSubmit={(e) => { e.preventDefault(); isLoading ? stopRef.current?.abort() : send(); }}>
-                <Textarea className="rounded-lg min-h-0 max-h-48 resize-none" rows={1} placeholder="Enter your message"
-                       value={message} onChange={(e) => setMessage(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
-                                    e.preventDefault();
-                                    e.currentTarget.form?.requestSubmit();
-                                }}} />
+                {messages.map((m, i) => (
+                    <div key={i} className="flex flex-col gap-1">
+                        <ChatMessage {...m}/>
+                        <Button variant="ghost" size="icon-sm" className={cn(m.role === "user" ? "self-end" : "self-start", "cursor-pointer")}
+                                onClick={() => navigator.clipboard.writeText(m.content)}>
+                            <Copy/>
+                        </Button>
+                    </div>
+                ))}
 
-                <Button type="submit" disabled={!message.trim() && !isLoading} className="cursor-pointer rounded-lg">
-                    {isLoading ? <Square/> : <Send/>}
-                </Button>
-            </form>
+                <form className="flex flex-row gap-4 mt-auto" onSubmit={(e) => { e.preventDefault(); isLoading ? stopRef.current?.abort() : send(); }}>
+                    <Textarea className="rounded-lg min-h-0 max-h-48 resize-none" rows={1} placeholder="Enter your message"
+                           value={message} onChange={(e) => setMessage(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
+                                        e.preventDefault();
+                                        e.currentTarget.form?.requestSubmit();
+                                    }}} />
 
-            <ModelPicker {...selection}/>
-        </div>
+                    <Button type="submit" disabled={!isLoading && !canSend} className="cursor-pointer rounded-lg">
+                        {isLoading ? <Square/> : <Send/>}
+                    </Button>
+                </form>
+
+                <ModelPicker {...selection}/>
+            </div>
+        </>
     );
 }

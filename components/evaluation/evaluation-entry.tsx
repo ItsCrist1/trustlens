@@ -5,8 +5,10 @@ import ModelPicker from "@/components/llm-interface/model-picker";
 import {Label} from "@/components/ui/label";
 
 export default function EvaluationEntry({configs}: {configs: ChatConfig[]}) {
-    const victim = useModelSelection(configs);
-    const attacker = useModelSelection(configs);
+    const llmConfigs = configs.filter((c) => c.kind === "llm");
+
+    const victim = useModelSelection(llmConfigs);
+    const attacker = useModelSelection(llmConfigs);
     const evaluator = useModelSelection(configs);
 
     return (
