@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export function TopBar() {
     return (
-        <header className="sticky top-0 z-50 flex h-14 items-center justify-between gap-4 border-b bg-background/70 px-4 backdrop-blur">
+        <header className="sticky top-0 z-50 flex h-14 items-center justify-between gap-4 border-b bg-background/70 px-4 backdrop-blur [view-transition-name:nav-shell]">
             <div className="flex min-w-0 items-center gap-6">
                 <Image src="/flowera.png" width={120} height={120} alt="Flowera Logo"
                        className="dark:invert hidden sm:block"/>

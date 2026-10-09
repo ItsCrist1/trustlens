@@ -13,7 +13,20 @@ export function ThemeToggle() {
             variant="outline"
             size="icon"
             aria-label="Toggle theme"
-            onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+            onClick={() => {
+                const next = resolvedTheme === "dark" ? "light" : "dark";
+                if(!document.startViewTransition)
+                    return setTheme(next);
+
+                const html = document.documentElement;
+                html.dataset.themeSwitch = "";
+                const transition = document.startViewTransition(() => {
+                    html.classList.toggle("dark", next === "dark");
+                    setTheme(next);
+                });
+
+                transition.finished.finally(() => delete html.dataset.themeSwitch);
+            }}>
 
             <Sun className="dark:hidden"/>
             <Moon className="hidden dark:block"/>

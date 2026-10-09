@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { cookies } from "next/headers";
 import { SideBar } from "@/components/nav/side-bar";
 import { ORIENTATION_COOKIE, SIDEBAR_WIDTH_COOKIE, clampSidebarWidth, type Orientation } from "@/components/nav/orientation";
+import {NavShell} from "@/components/nav/nav-shell";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -62,8 +63,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <ThemeProvider>
                 <Toaster/>
                 <div className={cn("flex flex-1", orientation === "horizontal" ? "flex-col" : "flex-row")}>
-                    {orientation === "horizontal" ? <TopBar/> : <SideBar width={width}/>}
-                    <main className="flex-1 min-w-0">{children}</main>
+                    <NavShell initial={orientation} topBar={<TopBar/>} sideBar={<SideBar width={width}/>}>
+                        {children}
+                    </NavShell>
                 </div>
             </ThemeProvider>
         </Providers>

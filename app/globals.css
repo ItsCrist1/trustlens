@@ -130,3 +130,34 @@
     @apply font-mono;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+    ::view-transition-group(nav-shell) {
+        animation-duration: 450ms;
+        animation-timing-function: cubic-bezier(.2, .8, .2, 1);
+    }
+    ::view-transition-group(nav-tab-evals)   { animation-delay: 40ms; }
+    ::view-transition-group(nav-tab-results) { animation-delay: 80ms; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html[data-theme-switch] * {
+        view-transition-name: none !important;
+    }
+    html[data-theme-switch]::view-transition-old(root),
+    html[data-theme-switch]::view-transition-new(root) {
+        animation: none;
+        mix-blend-mode: normal;
+    }
+    html[data-theme-switch]::view-transition-new(root) {
+        animation: theme-wipe 350ms ease-in-out;
+        mask-image: linear-gradient(to bottom, black 40%, transparent 60%);
+        mask-size: 100% 250%;
+        mask-repeat: no-repeat;
+    }
+}
+
+@keyframes theme-wipe {
+    from { mask-position: 0 100%; }
+    to   { mask-position: 0 0; }
+}

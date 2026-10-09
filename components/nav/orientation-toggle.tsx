@@ -1,12 +1,13 @@
 "use client"
 
-import { useRouter } from "next/navigation";
 import { PanelLeft, PanelTop } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ORIENTATION_COOKIE, type Orientation } from "@/components/nav/orientation";
+import {flushSync} from "react-dom";
+import {useSetOrientation} from "@/components/nav/nav-shell";
 
 export function OrientationToggle({ orientation }: { orientation: Orientation }) {
-    const router = useRouter();
+    const setOrientation = useSetOrientation();
     const next = orientation === "horizontal" ? "vertical" : "horizontal";
 
     return (
@@ -14,7 +15,9 @@ export function OrientationToggle({ orientation }: { orientation: Orientation })
                 aria-label={`Switch to ${next} tabs`}
                 onClick={() => {
                     document.cookie = `${ORIENTATION_COOKIE}=${next}; path=/; max-age=31536000`;
-                    router.refresh();
+                    if (!document.startViewTransition)
+                        return setOrientation(next);
+                    document.startViewTransition(() => flushSync(() => setOrientation(next)));
                 }}>
             {orientation === "horizontal" ? <PanelLeft/> : <PanelTop/>}
         </Button>

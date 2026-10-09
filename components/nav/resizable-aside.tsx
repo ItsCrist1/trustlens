@@ -29,7 +29,7 @@ export function ResizableAside({ initialWidth, cookieName, children }: { initial
     }
 
     return (
-        <aside style={{ width }} className="@container sticky top-0 flex shrink-0 flex-col gap-6 border-r bg-sidebar p-3">
+        <aside style={{ width }} className="@container sticky top-0 flex shrink-0 flex-col gap-6 border-r bg-sidebar p-3 [view-transition-name:nav-shell]">
             {children}
             <div onPointerDown={startDrag}
                  onDoubleClick={() => {

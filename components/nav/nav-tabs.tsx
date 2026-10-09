@@ -12,13 +12,15 @@ const tabs = [
 ] satisfies { href: string; label: string; icon: LucideIcon }[]
 
 export function NavTabs({ orientation }: { orientation: "horizontal" | "vertical" }) {
-    const pathname = usePathname()
+    const pathname = usePathname();
+
     return (
         <nav className={cn("flex gap-5", orientation === "vertical" ? "flex-col" : "flex-row")}>
             {tabs.map(t => (
                 <Link key={t.href} href={t.href}
                       aria-current={pathname === t.href ? "page" : undefined}
-                      className="rounded-lg px-3 py-2 aria-[current=page]:bg-accent @max-[120px]:px-0">
+                      className="rounded-lg px-3 py-2 aria-[current=page]:bg-accent @max-[120px]:px-0"
+                      style={{ viewTransitionName: `nav-tab-${t.label.toLowerCase()}` }}>
                     <div className="flex items-center gap-2 @max-[120px]:justify-center">
                         <t.icon className="shrink-0"/>
                         <span className={cn("@max-[120px]:hidden", orientation === "horizontal" && "max-md:hidden")}>{t.label}</span>
